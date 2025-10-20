@@ -1,7 +1,8 @@
 import { renderHeader } from './components/header';
+import { router } from './router';
+export { renderTech };
+import "./css/card.scss";
 
-//eslint-disable-next-line
-//import * as bulma from 'bulma';
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -9,102 +10,107 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('#header');
   const footer = document.querySelector('#footer');
 
-  const URL = "https://xcaoefgporrjzlirttaz.supabase.co/rest/v1/navigation_menu";
-  const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhjYW9lZmdwb3JyanpsaXJ0dGF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1OTc2NjQsImV4cCI6MjA3NjE3MzY2NH0.Ju9E4JYmn41QrKkmPVaYQq9odhhEDx0JmqtHA_0-NeI";
-
-  /* const data = {
-    "name": "Raton",
-    "price": 15
-  }; */
   renderHeader().then(data => header.innerHTML = data);
-  
-  //header.innerHTML = renderHeader();
 
-  //obtenerDatos(URL, KEY, header);
-  
-  //updateDatos(URL, KEY, data, 6);
-
-
-
+  router(window.location.hash, app);
+  window.addEventListener("hashchange", () =>{
+    router(window.location.hash, app);
+  });
 })
 
-async function obtenerDatos(URL, KEY) {
-    try {
-        const response = await fetch(URL + "?select=*", {
-            method: 'GET',
-            headers: {
-                "apiKey": KEY,
-                "Authorization": "Bearer " + KEY
-            }
-        });
+function renderTech(data) {
+  if (!Array.isArray(data)) return '<p>No hay datos.</p>';
+
+  console.log(data)
+  const wrapper = document.createElement('div');
+
+         wrapper.innerHTML = Object.values(data).map(tech => `
+            <div class="card">
+                <div class="title">${tech.technique_name} - ${tech.japanese_name}</div>
+                <div class="tech-type">${tech.category_type}</div>
+                <div class="tech-info">
+                    <div class="info">${tech.rank_name}</div>
+                    <div class="info">${tech.type_name}</div>
+                    <div class="info">${tech.style}</div>
+                    <div class="info">${tech.range_description}</div>
+                    <div class="info">${tech.chakra_cost}</div>
+                    <div class="info">Requisitos: ${tech.requirements}</div>
+                </div>
+                <div class="tech-effect">
+                <div class="tech-image" style="background-image: url('${tech.image_url}')"></div>
+                <div class="effect">${tech.description}</div>
+                <div class="effect"><b><span class="destacado">Efecto:</span> </b>${tech.effects}</div>
+                <div class="effect"><b><span class="destacado">Aclaraciones:</span> </b><br>${tech.clarifications}</div>
+                </div>
+                
+            </div>
+        `).join('');
         
-        const data = await response.json();
-        console.log(data);
-        
-        
-    } catch (error) {
-        console.error('Error al obtener los datos:', error);
-        throw error; // Opcional: re-lanzar el error para que lo maneje quien llame a la función
-    }
+        return wrapper;
+  
+  
+  /* return data.map(tech => `
+    <div class="card">
+      <div class="title">${tech.technique_name || 'Sin nombre'}</div>
+      <div class="tech-type">${tech.category_type || ''}</div>
+      <!-- Asegúrate de que tech.info existe -->
+      <div class="tech-info">
+        <div class="info">${tech.info?.rank || ''}</div>
+        <div class="info">${tech.info?.type || ''}</div>
+        <div class="info">${tech.info?.style || ''}</div>
+        <div class="info">${tech.info?.alcance || ''}</div>
+        <div class="info">${tech.info?.charka || ''}</div>
+        <div class="info">Requisitos: ${tech.info?.reqs || ''}</div>
+      </div>
+      <div class="tech-effect">
+        <div class="tech-image" style="background-image: url('${tech.image || ''}')"></div>
+        <div class="effect">${tech.descripcion || ''}</div>
+        <div class="effect"><b>Efecto:</b> ${tech.efecto || ''}</div>
+        <div class="effect"><b>Aclaraciones:</b> ${tech.aclaraciones || ''}</div>
+      </div>
+    </div>
+  `).join(''); */
 }
 
-function insertDatos(URL, KEY, data){
-  (()=>{
-    fetch(URL, {
-        method: 'POST',
-        headers: {
-            "apiKey": KEY,
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + KEY,
-            "Prefer": "return=representation"
-        },
-        body: JSON.stringify(data)
-    }).then((response) => {
-        return response.json();
-    }).then((data) => {
-        console.log(data);
-    });
-  })();
-}
+/*
 
-function updateDatos(URL, KEY, data, id){
-  (()=>{
-    fetch(URL  + `?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: {
-            "apiKey": KEY,
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + KEY,
-            "Prefer": "return=representation"
-        },
-        body: JSON.stringify(data)
-    }).then((response) => {
-        return response.json();
-    }).then((data) => {
-        console.log(data);
-    });
-  })();
-}
+import { renderHeader } from './components/header';
+import { router } from './router';
+import { fetchTech } from './services/supabase.js';
+export { renderTech };
 
-async function uploadImage(projectUrl, KEY, imageBlob, bucket = 'image-test', fileName = 'image.png') {
-  const headersFile = {
-    apiKey: KEY,
-    Authorization: `Bearer ${KEY}`,
-    'x-upsert': 'true'
-  };
 
-  const formData = new FormData();
-  formData.append('file', imageBlob, fileName);
+document.addEventListener('DOMContentLoaded', () => {
+  const app = document.querySelector('#app');
+  const header = document.querySelector('#header');
 
-  const response = await fetch(`${projectUrl}/storage/v1/object/${bucket}/${fileName}`, {
-    method: 'POST',
-    headers: headersFile, // do not set Content-Type when sending FormData
-    body: formData
+  renderHeader().then(data => {
+    header.innerHTML = data;
   });
 
-  if (!response.ok) {
-    throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
-  }
+  // ✅ Llama al router (es async, pero no necesitas await si no haces nada después)
+  router(window.location.hash, app);
 
-  return await response.json();
+  window.addEventListener('hashchange', () => {
+    router(window.location.hash, app);
+  });
+});
+
+function renderTech(data){
+  
+  console.log(data);
+  const wrapper = document.getElementById("wrapper");
+
+         wrapper.innerHTML = Object.values(data).map(tech => `
+            <div class="card">
+                <div class="title">${tech.technique_name}</div>
+                
+            </div>
+        `).join('');
+        
+        return wrapper;
 }
+
+
+
+*/
