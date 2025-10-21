@@ -12,6 +12,7 @@ async function techPage() {
   
   // Aquí puedes usar currentRoute para modificar tu petición
   const dataTech = await fetchTech(routeProcessed);
+  /* TODO: Comprobar porqué se muestra el inuzuka en todos lados*/
   const dataAbility = await fetchAbilitys(routeProcessed);
   
   return renderPage(dataTech, dataAbility);
