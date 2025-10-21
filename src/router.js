@@ -1,39 +1,43 @@
 // router.js
-import { fetchTech } from './services/supabase.js';
-import { renderTech } from './main.js';
-
-// ⚠️ NO importes renderTech desde main.js → mueve renderTech a su propio archivo
-// Por ahora, lo definimos aquí para que funcione (pero luego lo refactorizamos)
+import { techPage } from './components/technique.js';
+export { getCurrentRoute }
 
 
-async function techPage() {
-  const data = await fetchTech();
-  return renderTech(data); // devuelve string HTML
-}
+// Ruta que viene del menú
+let currentRoute = "";
 
+// ✅ Map de rutas con referencias a funciones, NO ejecuciones
 const routes = new Map([
   ['', techPage],
-  ['#/', techPage],
-  ['#/login', techPage],
+  ['/#', techPage],
+  ['#login', techPage],
+  ['#Konohagakure', techPage],
+  ['#Konohagakure/Clan%20Inuzuka', techPage],
+  ['#Sunagakure', techPage],
 ]);
 
-// ✅ router debe ser async
+// Función de router
 export async function router(route, container) {
+  // Guardar la ruta actual antes de llamar al handler
+  currentRoute = route;
+  
   const handler = routes.get(route);
 
   if (!handler) {
-    container.innerHTML = `<h2>404</h2>`;
+    container.innerHTML = `<h2>Error 404</h2>`;
     return;
   }
 
   try {
-    // ✅ await para esperar la Promise
-    const elementDOM = await handler(); // techPage() → Promise<string>
-
-    // ✅ Usa innerHTML, no replaceChildren, si trabajas con strings
+    const elementDOM = await handler();
     container.replaceChildren(elementDOM);
   } catch (error) {
     console.error('Error en la ruta:', error);
-    container.innerHTML = `<p>Error al cargar la página.</p>`;
+    container.innerHTML = `<p>Error 404</p>`;
   }
+}
+
+// Obtener la ruta actual
+function getCurrentRoute() {
+  return currentRoute;
 }
