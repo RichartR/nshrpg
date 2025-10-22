@@ -1,6 +1,8 @@
 // router.js
 import { techPage } from './components/technique.js';
 export { getCurrentRoute }
+import { fetchVillages } from "./services/supabase.js";
+import { renderGeneralGlossary } from "./components/globalGlossary.js";
 
 
 // Ruta que viene del menú
@@ -10,8 +12,9 @@ let currentRoute = "";
 const routes = new Map([
   ['', techPage],
   ['/#', techPage],
+  ['#Glosario', renderGeneralGlossary],
   ['#login', techPage],
-  ['#Konohagakure', techPage],
+  ['#Konohagakure', fetchVillages],
   ['#Konohagakure/Clan%20Inuzuka', techPage],
   ['#Sunagakure', techPage],
 ]);

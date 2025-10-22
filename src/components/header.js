@@ -19,66 +19,63 @@ async function renderHeader() {
         categories.map(async (category) => {
           const subcats = subcategories[category] || [];
 
-          // La categoría NO tiene subcategorías, el dropdown final es LEVEL 3
+          // La categoría NO tiene subcategorías
           if (subcats.length === 0) {
             if (!addedExclusive) {
               addedExclusive = true;
               return `
-                                <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
-                                    <a href="#${affiliationItem}/contenido-exclusivo" class="nav-link">
-                                        Contenido Exclusivo
-                                    </a>
-                                    <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
-                                        ${category}
-                                        <span class="submenu-arrow"></span>
-                                    </a>
-                                </li>
-                            `;
+                <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
+                  <a href="#${affiliationItem}/contenido-exclusivo" class="nav-link">
+                    Contenido Exclusivo
+                  </a>
+                  <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
+                    ${category}
+                    <span class="submenu-arrow"></span>
+                  </a>
+                </li>
+              `;
             } else {
-              // ya se añadió "Contenido Exclusivo" antes — solo mostrar el enlace de la categoría
               return `
-                                <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
-                                    <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
-                                        ${category}
-                                        <span class="submenu-arrow"></span>
-                                    </a>
-                                </li>
-                            `;
+                <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
+                  <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
+                    ${category}
+                    <span class="submenu-arrow"></span>
+                  </a>
+                </li>
+              `;
             }
           }
 
-          // 3. Mapear y esperar las promesas de cada subcategoría (que tendrá LEVEL 4)
+          // La categoría SÍ tiene subcategorías
           const subcatItems = await Promise.all(
             subcats.map(async (subcat) => {
               return `
-                                <li class="dropdown-item has-submenu" data-subcategory="${subcat}" data-menu-id="submenu-${subcat}">
-                                    <a href="#${affiliationItem}/${category}/${subcat}" class="nav-link submenu-toggle">
-                                        ${subcat}
-                                        <span class="submenu-arrow"></span>
-                                    </a>
-                                    
-                                </li>
-                            `;
+                <li class="dropdown-item has-submenu" data-subcategory="${subcat}" data-menu-id="submenu-${subcat}">
+                  <a href="#${affiliationItem}/${category}/${subcat}" class="nav-link submenu-toggle">
+                    ${subcat}
+                    <span class="submenu-arrow"></span>
+                  </a>
+                </li>
+              `;
             })
           );
 
-          // Caso 2: La categoría SÍ tiene subcategorías, el dropdown es LEVEL 3 (no final)
           return `
-                        <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
-                            <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
-                                ${category}
-                                <span class="submenu-arrow"></span>
-                            </a>
-                            <ul class="dropdown-menu level-3">
-                                <li class="dropdown-item">
-                                    <a href="#${affiliationItem}/${category}/tecnicas-generales" class="nav-link">
-                                        Generales ${category}
-                                    </a>
-                                </li>
-                                ${subcatItems.join("")}
-                            </ul>
-                        </li>
-                    `;
+            <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
+              <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
+                ${category}
+                <span class="submenu-arrow"></span>
+              </a>
+              <ul class="dropdown-menu level-3">
+                <li class="dropdown-item">
+                  <a href="#${affiliationItem}/${category}/tecnicas-generales" class="nav-link">
+                    Generales ${category}
+                  </a>
+                </li>
+                ${subcatItems.join("")}
+              </ul>
+            </li>
+          `;
         })
       );
 
@@ -88,66 +85,62 @@ async function renderHeader() {
           : '<li class="dropdown-item disabled"><span>No hay categorías</span></li>';
 
       return `
-                <li class="dropdown-item has-submenu" data-affiliation="${affiliationItem}" data-menu-id="submenu-${affiliationItem}">
-                    <a href="#${affiliationItem}" class="nav-link submenu-toggle">
-                        ${affiliationItem}
-                        <span class="submenu-arrow"></span>
-                    </a>
-                    <ul class="dropdown-menu level-2">
-                        <li class="dropdown-item">
-                            <a href="#${affiliationItem}/tecnicas-generales" class="nav-link">
-                                Generales ${affiliationItem}
-                            </a>
-                        </li>
-                        ${categoriesHTML}
-                    </ul>
-                </li>
-            `;
+        <li class="dropdown-item has-submenu" data-affiliation="${affiliationItem}" data-menu-id="submenu-${affiliationItem}">
+          <a href="#${affiliationItem}" class="nav-link submenu-toggle">
+            ${affiliationItem}
+            <span class="submenu-arrow"></span>
+          </a>
+          <ul class="dropdown-menu level-2">
+            <li class="dropdown-item">
+              <a href="#${affiliationItem}/tecnicas-generales" class="nav-link">
+                Generales ${affiliationItem}
+              </a>
+            </li>
+            ${categoriesHTML}
+          </ul>
+        </li>
+      `;
     })
   );
 
   return `
-        <nav class="main-nav" role="navigation" aria-label="Navegación principal">
-            <ul class="nav-menu">
-                <div class="nav-start">
-                    <a href="#" class="nav-logo"><strong>Mi Sitio</strong></a>
-                </div>
+    <nav class="main-nav" role="navigation" aria-label="Navegación principal">
+      <div class="nav-start">
+        <a href="#" class="nav-logo"><strong>Mi Sitio</strong></a>
+      </div>
 
-                <div class="nav-center-wrapper">
-                    <ul class="nav-center">
-                        <li class="nav-item"><a href="#">Inicio</a></li>
+      <ul class="nav-center">
+        <li class="nav-item"><a href="#">Inicio</a></li>
 
-                        <li class="nav-item nav-dropdown" id="main-dropdown">
-                            <a href="#Glosario" class="nav-link dropdown-toggle">Glosario</a>
-                            <ul class="dropdown-menu level-1">
-                                <div class="dropdown-scroll-wrapper">
-                                    ${affiliationItems.join("")}
-                                </div>
-                            </ul>
-                        </li>
+        <li class="nav-item nav-dropdown" id="main-dropdown">
+          <a href="#Glosario" class="nav-link dropdown-toggle">Glosario</a>
+          <ul class="dropdown-menu level-1">
+            <div class="dropdown-scroll-wrapper">
+              ${affiliationItems.join("")}
+            </div>
+          </ul>
+        </li>
 
-                        <li class="nav-item"><a href="#Contenido">Contenido</a></li>
-                    </ul>
-                </div>
+        <li class="nav-item"><a href="#Contenido">Contenido</a></li>
+      </ul>
 
-                <div class="nav-end">
-                    <a href="#" class="btn btn-primary">Registrarse</a>
-                    <a href="#" class="btn btn-secondary">Iniciar sesión</a>
-                </div>
+      <div class="nav-end">
+        <a href="#" class="btn btn-primary">Registrarse</a>
+        <a href="#" class="btn btn-secondary">Iniciar sesión</a>
+      </div>
 
-                <button class="nav-toggle" aria-label="Alternar menú" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </ul>
-        </nav>
-    `;
+      <button class="nav-toggle" aria-label="Alternar menú" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  `;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const navToggle = document.querySelector(".nav-toggle");
-  const navMenu = document.querySelector(".nav-menu");
+  const navMenu = document.querySelector(".nav-center"); // ahora es .nav-center
 
   if (navToggle && navMenu) {
     navToggle.addEventListener("click", () => {
@@ -201,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// === Funciones auxiliares ===
 async function fetchData() {
   try {
     const response = await fetch(URL + "navigation_menu?active_menu=eq.true", {

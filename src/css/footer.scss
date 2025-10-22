@@ -1,0 +1,13 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 14px;
+  z-index: 1000; /* Asegura que esté por encima del contenido */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.2); /* Opcional: sombra para mejor contraste */
+}

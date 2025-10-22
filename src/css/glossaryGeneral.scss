@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrapper-glossary {
+  background-image: url("../images/bg-glosary.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px 0;
+  min-height: calc(100dvh - 60px); /* altura del viewport menos el footer */
+  box-sizing: border-box;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+  width: 80vw;
+  max-width: 1200px;
+  place-content: center;
+  margin: 0 auto;
+}
+
+.grid-item {
+  background: white;
+  border: 2px solid #000;
+  padding: 0;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.grid-item a.village-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.grid-item img {
+    border-bottom: 2px solid #000;
+    width: 100%;
+    height: 150px;
+    min-height: 230px;
+    object-fit: cover;
+    display: block;
+}
+
+.grid-item .village-name {
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.grid-item a.village-link:hover .village-name {
+  background-color: black;
+  color: white;
+}
+
+/* 📱 Responsive: Tablet (hasta 768px) → 2 columnas */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+    width: 90vw;
+    gap: 16px;
+  }
+
+  .grid-item img {
+    height: 130px;
+  }
+
+  .grid-item .village-name {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
+/* 📱 Responsive: Móvil (hasta 480px) → 1 columna */
+@media (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    width: 95vw;
+    gap: 14px;
+    padding: 15px;
+  }
+
+  .grid-item img {
+    height: 120px;
+  }
+
+  .grid-item .village-name {
+    font-size: 15px;
+    padding: 10px;
+  }
+}

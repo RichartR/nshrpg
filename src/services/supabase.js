@@ -1,7 +1,7 @@
 //import { URL, KEY } from '../environment.env';
 import { supabase } from "../environment.env";
 
-export { fetchTech, fetchAbilitys };
+export { fetchTech, fetchAbilitys, fetchVillages };
 
 async function fetchTech(routeProcessed) {
   let query = supabase.from("technique_details").select("*");
@@ -60,3 +60,15 @@ async function fetchAbilitys(routeProcessed){
 
   return technique_details || [];
 }
+
+async function fetchVillages(){
+  let { data: affiliations, error } = await supabase.from("affiliations").select("*").eq("is_active", true);
+  
+  if (error) {
+    console.error("Error de conexión:", error);
+    return [];
+  }
+
+  return affiliations || [];
+}
+

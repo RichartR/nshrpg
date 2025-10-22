@@ -4,11 +4,9 @@ import { fetchTech, fetchAbilitys } from '../services/supabase.js';
 import { getCurrentRoute } from "../router.js";
 
 async function techPage() {
-  console.log('Ruta actual para API:', getCurrentRoute());
   const currentRoute = getCurrentRoute();
 
   const routeProcessed = processUrl(currentRoute);
-  console.log(routeProcessed);
   
   // Aquí puedes usar currentRoute para modificar tu petición
   const dataTech = await fetchTech(routeProcessed);
@@ -28,13 +26,8 @@ function renderPage(dataTech, dataAbility) {
   if (!Array.isArray(dataTech)) return '<p>No hay datos.</p>';
 
   const wrapper = document.createElement('div');
-  wrapper.classList.add('wrapper');  
-
-  console.log(dataAbility);
-  console.log(dataTech);
+  wrapper.classList.add('wrapper-card');  
   
-  
-
   wrapper.innerHTML = Object.values(dataAbility).map(ability => `
     <div class="card">
         <div class="title-ability">${ability.category_name}</div>
