@@ -1,6 +1,6 @@
 export { renderHeader };
 import "../css/header.scss";
-import { URL, KEY } from "../environment.js";
+import { URL, KEY } from "../environment.env";
 
 async function renderHeader() {
   const menuData = await fetchData();
@@ -8,27 +8,27 @@ async function renderHeader() {
   const submenu = obtainSubMenus(menuData);
   const subcategories = obtainSubCategories(menuData);
 
-  // 1. Mapear y esperar las promesas de cada afiliación
+  // Mapear y esperar las promesas de cada afiliación
   const affiliationItems = await Promise.all(
     affiliations.map(async (affiliationItem) => {
       const categories = submenu[affiliationItem] || [];
-      let addedExclusive = false; // <- bandera para insertar "Contenido Exclusivo" solo una vez por afiliación
+      let addedExclusive = false; // Insertar "Contenido Exclusivo" solo una vez por afiliación
 
-      // 2. Mapear y esperar las promesas de cada categoría
+      // Mapear y esperar las promesas de cada categoría
       const categoryItems = await Promise.all(
         categories.map(async (category) => {
           const subcats = subcategories[category] || [];
 
-          // Caso 1: La categoría NO tiene subcategorías, el dropdown final es LEVEL 3
+          // La categoría NO tiene subcategorías, el dropdown final es LEVEL 3
           if (subcats.length === 0) {
             if (!addedExclusive) {
               addedExclusive = true;
               return `
                                 <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
-                                    <a href="#${affiliationItem}/${category}/tecnicas-generales" class="nav-link">
+                                    <a href="#${affiliationItem}/contenido-exclusivo" class="nav-link">
                                         Contenido Exclusivo
                                     </a>
-                                    <a href="#" class="nav-link submenu-toggle">
+                                    <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
                                         ${category}
                                         <span class="submenu-arrow"></span>
                                     </a>
@@ -38,7 +38,7 @@ async function renderHeader() {
               // ya se añadió "Contenido Exclusivo" antes — solo mostrar el enlace de la categoría
               return `
                                 <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
-                                    <a href="#" class="nav-link submenu-toggle">
+                                    <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
                                         ${category}
                                         <span class="submenu-arrow"></span>
                                     </a>
@@ -52,7 +52,7 @@ async function renderHeader() {
             subcats.map(async (subcat) => {
               return `
                                 <li class="dropdown-item has-submenu" data-subcategory="${subcat}" data-menu-id="submenu-${subcat}">
-                                    <a href="#" class="nav-link submenu-toggle">
+                                    <a href="#${affiliationItem}/${category}/${subcat}" class="nav-link submenu-toggle">
                                         ${subcat}
                                         <span class="submenu-arrow"></span>
                                     </a>
@@ -65,7 +65,7 @@ async function renderHeader() {
           // Caso 2: La categoría SÍ tiene subcategorías, el dropdown es LEVEL 3 (no final)
           return `
                         <li class="dropdown-item has-submenu" data-category="${category}" data-menu-id="submenu-${category}">
-                            <a href="#" class="nav-link submenu-toggle">
+                            <a href="#${affiliationItem}/${category}" class="nav-link submenu-toggle">
                                 ${category}
                                 <span class="submenu-arrow"></span>
                             </a>
@@ -89,7 +89,7 @@ async function renderHeader() {
 
       return `
                 <li class="dropdown-item has-submenu" data-affiliation="${affiliationItem}" data-menu-id="submenu-${affiliationItem}">
-                    <a href="#" class="nav-link submenu-toggle">
+                    <a href="#${affiliationItem}" class="nav-link submenu-toggle">
                         ${affiliationItem}
                         <span class="submenu-arrow"></span>
                     </a>
@@ -118,7 +118,7 @@ async function renderHeader() {
                         <li class="nav-item"><a href="#">Inicio</a></li>
 
                         <li class="nav-item nav-dropdown" id="main-dropdown">
-                            <a href="#" class="nav-link dropdown-toggle">Glosario</a>
+                            <a href="#Glosario" class="nav-link dropdown-toggle">Glosario</a>
                             <ul class="dropdown-menu level-1">
                                 <div class="dropdown-scroll-wrapper">
                                     ${affiliationItems.join("")}
@@ -126,7 +126,7 @@ async function renderHeader() {
                             </ul>
                         </li>
 
-                        <li class="nav-item"><a href="#">Contacto</a></li>
+                        <li class="nav-item"><a href="#Contenido">Contenido</a></li>
                     </ul>
                 </div>
 
