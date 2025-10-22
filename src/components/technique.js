@@ -26,15 +26,15 @@ function processUrl(currentRoute){
 
 function renderPage(dataTech, dataAbility) {
   if (!Array.isArray(dataTech)) return '<p>No hay datos.</p>';
-console.log(dataAbility)
+
   const wrapper = document.createElement('div');
   wrapper.classList.add('wrapper');  
 
   wrapper.innerHTML = Object.values(dataAbility).map(ability => `
     <div class="card">
-        <div class="title">${ability.category_name}</div>
-        <div class="tech-effect">
-            <div class="tech-image" style="background-image: url('${ability.image_url}')"></div>
+        <div class="title-ability">${ability.category_name}</div>
+        <div class="ability-effect">
+            <div class="ability-image" style="background-image: url('${ability.image_url}')"></div>
             <div class="effect">${ability.description}</div>
             <div class="effect">${ability.stats}</div>
             <div class="effect"><b><span class="destacado">Características:</span> </b><br>
