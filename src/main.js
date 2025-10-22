@@ -1,21 +1,19 @@
-import './style.scss'
+import { renderHeader } from './components/header';
+import { router } from './router';
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+document.addEventListener('DOMContentLoaded', () => {
+  
+  const app = document.querySelector('#app');
+  const header = document.querySelector('#header');
+  const footer = document.querySelector('#footer');
 
-setupCounter(document.querySelector('#counter'))
+  renderHeader().then(data => header.innerHTML = data);
+
+  router(window.location.hash, app);
+  window.addEventListener("hashchange", () =>{
+    router(window.location.hash, app);
+  });
+})
+
+
+

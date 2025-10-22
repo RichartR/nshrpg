@@ -1,0 +1,331 @@
+:root{
+    --text-header-cards: #e2a171;
+    --header-color-1: #1c1c1c;
+    --header-color-2: #353535;
+    --mobile-breakpoint: 768px;
+    --tablet-breakpoint: 1024px;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.wrapper{
+    display: grid;
+    place-items: center;
+    background-image: url("../images/fondo.jpg");
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+}
+
+.card{
+    margin-top: 2vh;
+    border: 2px solid black;
+    width: min(55vw, 950px);
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* Responsive width */
+    @media (max-width: 1024px) {
+        width: 70vw;
+    }
+    
+    @media (max-width: 768px) {
+        width: 90vw;
+        margin-top: 1vh;
+    }
+    
+    @media (max-width: 480px) {
+        width: 95vw;
+    }
+}
+
+/* TÉCNICAS */
+.title{
+    min-height: 5vh;
+    height: auto;
+    border-bottom: 2px solid black;
+    display: grid;
+    place-content: center;
+    color: var(--text-header-cards);
+    font-weight: bold;
+    background-color: var(--header-color-1);
+    padding: 10px;
+    text-align: center;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    
+    @media (max-width: 768px) {
+        min-height: 4vh;
+        padding: 8px;
+    }
+}
+
+.tech-type{
+    min-height: 5vh;
+    height: auto;
+    border-bottom: 2px solid black;
+    display: grid;
+    place-content: center;
+    background-color: var(--header-color-2);
+    color: var(--text-header-cards);
+    padding: 8px;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    
+    @media (max-width: 768px) {
+        min-height: 4vh;
+        padding: 6px;
+    }
+}
+
+.tech-info{
+    min-height: 5vh;
+    height: auto;
+    border-bottom: 2px solid black;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    color: var(--text-header-cards);
+    background-color: var(--header-color-2);
+    
+    /* Responsive grid */
+    @media (max-width: 1024px) {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 480px) {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+}
+
+.info {
+    border-right: 2px solid black;
+    display: grid;
+    place-content: center;
+    min-height: 100%;
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    padding: 8px 4px;
+    text-align: center;
+    word-break: break-word;
+    overflow: hidden;
+    
+    /* Remove border for last items in responsive grid */
+    @media (max-width: 1024px) {
+        &:nth-child(3),
+        &:nth-child(6) {
+            border-right: none;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        &:nth-child(2),
+        &:nth-child(4),
+        &:nth-child(6) {
+            border-right: none;
+        }
+    }
+}
+
+.info:last-child{
+    border-right: none;
+}
+
+.tech-effect{
+    position: relative;
+    min-height: 190px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: clamp(1rem, 1.8vw, 1.5em);
+    margin: 10px;
+    
+    @media (max-width: 768px) {
+        min-height: 150px;
+        padding: 10px;
+        margin: 8px;
+    }
+    
+    @media (max-width: 480px) {
+        min-height: 120px;
+        padding: 8px;
+        margin: 5px;
+    }
+}
+
+.effect{
+    padding: 15px;
+    box-sizing: border-box;
+    line-height: 1.2;
+    
+    @media (max-width: 768px) {
+        padding: 10px;
+        line-height: 1.3;
+    }
+    
+    @media (max-width: 480px) {
+        padding: 8px;
+        line-height: 1.2;
+        font-size: 0.9em;
+    }
+}
+
+.tech-image{
+    float: right;
+    width: min(250px, 40%);
+    height: auto;
+    max-height: 180px;
+    aspect-ratio: 250/180;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid black;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    
+    /* Responsive image */
+    @media (max-width: 768px) {
+        width: min(200px, 35%);
+        max-height: 150px;
+        margin-left: 10px;
+        margin-bottom: 8px;
+    }
+    
+    @media (max-width: 480px) {
+        width: min(150px, 40%);
+        max-height: 120px;
+        margin-left: 8px;
+        margin-bottom: 6px;
+        /* En móvil, mantener float pero ajustar márgenes */
+        float: right;
+    }
+}
+
+/* Para móviles muy pequeños, centrar la imagen */
+@media (max-width: 360px) {
+    .tech-image {
+        float: none;
+        display: block;
+        margin: 0 auto 10px auto;
+    }
+    
+    .effect {
+        text-align: justify;
+    }
+}
+
+.destacado{
+    color: #d34e33;
+    font-weight: bold;
+}
+
+/* Additional responsive utilities */
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 5px;
+    }
+    
+    .card {
+        border-width: 1px;
+    }
+    
+    .title,
+    .tech-type,
+    .tech-info {
+        border-bottom-width: 1px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .card {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+    }
+    
+    .wrapper {
+        padding: 0;
+        background: white;
+    }
+}
+
+/* Habilidades */
+.title-ability{
+    min-height: 5vh;
+    height: auto;
+    border-bottom: 2px solid black;
+    display: grid;
+    place-content: center;
+    color: var(--header-color-1);
+    font-weight: bold;
+    background-color: var(--text-header-cards);
+    padding: 10px;
+    text-align: center;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    
+    @media (max-width: 768px) {
+        min-height: 4vh;
+        padding: 8px;
+    }
+}
+
+.ability-effect{
+    position: relative;
+    min-height: 190px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: clamp(1rem, 1.8vw, 1.5em);
+    margin: 10px;
+    
+    @media (max-width: 768px) {
+        min-height: 150px;
+        padding: 10px;
+        margin: 8px;
+    }
+    
+    @media (max-width: 480px) {
+        min-height: 120px;
+        padding: 8px;
+        margin: 5px;
+    }
+}
+
+.ability-image{
+    width: 80%;
+    max-width: 600px;
+    height: 400px;
+    aspect-ratio: 16/9;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid black;
+    margin: 20px auto;
+    display: block;
+    
+    /* Responsive image */
+    @media (max-width: 1024px) {
+        width: 90%;
+        height: 350px;
+    }
+    
+    @media (max-width: 768px) {
+        width: 95%;
+        height: 300px;
+        margin: 15px auto;
+    }
+    
+    @media (max-width: 480px) {
+        width: 100%;
+        height: 250px;
+        margin: 10px auto;
+        /* Eliminar float para mantener centrado */
+        float: none;
+    }
+}
