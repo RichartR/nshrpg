@@ -35,7 +35,10 @@ async function fetchTech(routeProcessed) {
 }
 
 async function fetchAbilitys(routeProcessed){
-    let query = supabase.from("entity_profile_details").select("*");
+  //Solo se debe ejecutar si hay más de un elemento, es decir, 2ndo nivel del dropdown
+  if(routeProcessed.length < 2) return [];
+
+  let query = supabase.from("entity_profile_details").select("*");
 
   // Si hay 1 elemento: buscar por affiliation_abbr
   if (routeProcessed.length === 2) {

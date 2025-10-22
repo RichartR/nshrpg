@@ -30,6 +30,11 @@ function renderPage(dataTech, dataAbility) {
   const wrapper = document.createElement('div');
   wrapper.classList.add('wrapper');  
 
+  console.log(dataAbility);
+  console.log(dataTech);
+  
+  
+
   wrapper.innerHTML = Object.values(dataAbility).map(ability => `
     <div class="card">
         <div class="title-ability">${ability.category_name}</div>
