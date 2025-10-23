@@ -89,9 +89,6 @@ async function fetchVillageData(routeProcessed){
     return [];
   }
 
-  console.log(categories);
-  
-
   return categories || [];
 }
 
