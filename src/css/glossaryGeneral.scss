@@ -4,8 +4,8 @@ body {
   box-sizing: border-box;
 }
 
-.wrapper-glossary {
-  background-image: url("../images/bg-glosary.png");
+.wrapper-glossary-general {
+  background-image: url("../images/bg-glosary.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -15,7 +15,7 @@ body {
   margin-bottom: 20px;
 }
 
-.grid-container {
+.grid-container-general {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
@@ -26,7 +26,7 @@ body {
   margin: 0 auto;
 }
 
-.grid-item {
+.grid-item-general {
   background: white;
   border: 2px solid #000;
   padding: 0;
@@ -35,13 +35,13 @@ body {
   overflow: hidden;
 }
 
-.grid-item a.village-link {
+.grid-item-general a.village-link-general {
     display: block;
     text-decoration: none;
     color: inherit;
 }
 
-.grid-item img {
+.grid-item-general img {
     border-bottom: 2px solid #000;
     width: 100%;
     height: 150px;
@@ -50,7 +50,7 @@ body {
     display: block;
 }
 
-.grid-item .village-name {
+.grid-item-general .village-name-general {
   padding: 10px;
   font-size: 16px;
   font-weight: bold;
@@ -60,24 +60,24 @@ body {
   letter-spacing: 1px;
 }
 
-.grid-item a.village-link:hover .village-name {
+.grid-item-general a.village-link-general:hover .village-name-general {
   background-color: black;
   color: white;
 }
 
 /* Responsive: Tablet (hasta 768px) → 2 columnas */
 @media (max-width: 768px) {
-  .grid-container {
+  .grid-container-general {
     grid-template-columns: repeat(2, 1fr);
     width: 90vw;
     gap: 16px;
   }
 
-  .grid-item img {
+  .grid-item-general img {
     height: 130px;
   }
 
-  .grid-item .village-name {
+  .grid-item-general .village-name-general {
     font-size: 14px;
     padding: 8px;
   }
@@ -85,18 +85,18 @@ body {
 
 /* Responsive: Móvil (hasta 480px) → 1 columna */
 @media (max-width: 480px) {
-  .grid-container {
+  .grid-container-general {
     grid-template-columns: 1fr;
     width: 95vw;
     gap: 14px;
     padding: 15px;
   }
 
-  .grid-item img {
+  .grid-item-general img {
     height: 120px;
   }
 
-  .grid-item .village-name {
+  .grid-item-general .village-name-general {
     font-size: 15px;
     padding: 10px;
   }

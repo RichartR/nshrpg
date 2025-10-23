@@ -1,6 +1,5 @@
 // router.js
-import { fetchVillages } from "./services/supabase.js";
-import { renderGeneralGlossaryController, techPageController } from "./controller/controller.js";
+import { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController } from "./controller/controller.js";
 export { router }
 export { getCurrentRoute }
 
@@ -13,9 +12,12 @@ const routes = new Map([
   ['/#', techPageController],
   ['#Glosario', renderGeneralGlossaryController],
   ['#login', techPageController],
-  ['#Konohagakure', fetchVillages],
+  ['#Konohagakure', renderVillageGlossaryController],
   ['#Konohagakure/Clan%20Inuzuka', techPageController],
-  ['#Sunagakure', techPageController],
+  ['#Sunagakure', renderVillageGlossaryController],
+  ['#Iwagakure', renderVillageGlossaryController],
+  ['#Kumogakure', renderVillageGlossaryController],
+  ['#Kirigakure', renderVillageGlossaryController],
 ]);
 
 // Función de router

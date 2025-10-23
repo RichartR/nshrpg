@@ -2,14 +2,14 @@ import { renderGeneralGlossary } from "../components/globalGlossary.js";
 import { fetchVillages } from "../services/supabase";
 import { renderPage } from "../components/technique.js";
 import { fetchTech, fetchAbilitys } from '../services/supabase.js';
+import { fetchVillageData } from "../services/supabase.js";
+import { renderVillageGlossary } from "../components/villageGlossary.js";
 import { getCurrentRoute } from "../router.js";
-export { renderGeneralGlossaryController, techPageController }
+export { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController }
 
 // Controlador crear técnica
 async function techPageController() {
   const currentRoute = getCurrentRoute();
-
-  
   const routeProcessed = processUrl(currentRoute);
   
   // Obtener los datos en base a la ruta
@@ -31,4 +31,14 @@ async function renderGeneralGlossaryController() {
     const villages = await fetchVillages();
 
     return renderGeneralGlossary(villages); 
+}
+
+// Controlador glosario de una aldea en concreto
+async function renderVillageGlossaryController() {
+    const currentRoute = getCurrentRoute();
+    const routeProcessed = processUrl(currentRoute);
+
+    const villageData = await fetchVillageData(routeProcessed);
+
+    return renderVillageGlossary(villageData); 
 }

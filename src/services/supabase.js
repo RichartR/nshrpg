@@ -1,7 +1,7 @@
 //import { URL, KEY } from '../environment.env';
 import { supabase } from "../environment.env";
 
-export { fetchTech, fetchAbilitys, fetchVillages };
+export { fetchTech, fetchAbilitys, fetchVillages, fetchVillageData };
 
 async function fetchTech(routeProcessed) {
   let query = supabase.from("technique_details").select("*");
@@ -62,7 +62,11 @@ async function fetchAbilitys(routeProcessed){
 }
 
 async function fetchVillages(){
-  let { data: affiliations, error } = await supabase.from("affiliations").select("*").eq("is_active", true);
+  let { data: affiliations, error } = await supabase
+    .from("affiliations")
+    .select("*")
+    .eq("is_active", true)
+    .order('menu_order', { ascending: true });
   
   if (error) {
     console.error("Error de conexión:", error);
@@ -70,5 +74,24 @@ async function fetchVillages(){
   }
 
   return affiliations || [];
+}
+
+async function fetchVillageData(routeProcessed){
+  let { data: categories, error } = await supabase
+    .from("navigation_complete_view")
+    .select("*")
+    .eq("affiliation_abbr", routeProcessed)
+    .eq("is_active", true)
+    .order('category_order', { ascending: true });
+  
+  if (error) {
+    console.error("Error de conexión:", error);
+    return [];
+  }
+
+  console.log(categories);
+  
+
+  return categories || [];
 }
 
