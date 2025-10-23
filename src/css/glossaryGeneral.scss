@@ -12,6 +12,7 @@ body {
   padding: 20px 0;
   min-height: calc(100dvh - 60px); /* altura del viewport menos el footer */
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 .grid-container {
@@ -64,7 +65,7 @@ body {
   color: white;
 }
 
-/* 📱 Responsive: Tablet (hasta 768px) → 2 columnas */
+/* Responsive: Tablet (hasta 768px) → 2 columnas */
 @media (max-width: 768px) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
@@ -82,7 +83,7 @@ body {
   }
 }
 
-/* 📱 Responsive: Móvil (hasta 480px) → 1 columna */
+/* Responsive: Móvil (hasta 480px) → 1 columna */
 @media (max-width: 480px) {
   .grid-container {
     grid-template-columns: 1fr;

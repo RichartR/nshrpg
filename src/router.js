@@ -1,26 +1,25 @@
 // router.js
-import { techPage } from './components/technique.js';
-export { getCurrentRoute }
 import { fetchVillages } from "./services/supabase.js";
-import { renderGeneralGlossary } from "./components/globalGlossary.js";
+import { renderGeneralGlossaryController, techPageController } from "./controller/controller.js";
+export { router }
+export { getCurrentRoute }
 
 
 // Ruta que viene del menú
 let currentRoute = "";
 
-// ✅ Map de rutas con referencias a funciones, NO ejecuciones
 const routes = new Map([
-  ['', techPage],
-  ['/#', techPage],
-  ['#Glosario', renderGeneralGlossary],
-  ['#login', techPage],
+  ['', techPageController],
+  ['/#', techPageController],
+  ['#Glosario', renderGeneralGlossaryController],
+  ['#login', techPageController],
   ['#Konohagakure', fetchVillages],
-  ['#Konohagakure/Clan%20Inuzuka', techPage],
-  ['#Sunagakure', techPage],
+  ['#Konohagakure/Clan%20Inuzuka', techPageController],
+  ['#Sunagakure', techPageController],
 ]);
 
 // Función de router
-export async function router(route, container) {
+async function router(route, container) {
   // Guardar la ruta actual antes de llamar al handler
   currentRoute = route;
   

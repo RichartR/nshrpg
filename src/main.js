@@ -1,5 +1,5 @@
-import { renderHeader } from './components/header';
 import { router } from './router';
+import { renderHeader } from './components/header';
 import { renderFooter } from './components/footer';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('#header');
   const footer = document.querySelector('#footer');
 
+  // Revisar para mover la lógica del fetch a un controler
   renderHeader().then(data => header.innerHTML = data);
 
   footer.appendChild(renderFooter());

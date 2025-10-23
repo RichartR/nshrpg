@@ -1,9 +1,10 @@
-import { fetchVillages } from "../services/supabase";
+
 export { renderGeneralGlossary }
 import "../css/glossaryGeneral.scss";
 
-async function renderGeneralGlossary(){
-    const villages = await fetchVillages();
+function renderGeneralGlossary(villages){
+   
+    if (!Array.isArray(villages)) return '<p>No hay datos.</p>';
 
     const wrapper = document.createElement('div');
     wrapper.classList.add('wrapper-glossary');

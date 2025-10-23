@@ -1,47 +1,32 @@
-export { techPage };
+export { renderPage };
 import "../css/card.scss";
-import { fetchTech, fetchAbilitys } from '../services/supabase.js';
-import { getCurrentRoute } from "../router.js";
-
-async function techPage() {
-  const currentRoute = getCurrentRoute();
-
-  const routeProcessed = processUrl(currentRoute);
-  
-  // Aquí puedes usar currentRoute para modificar tu petición
-  const dataTech = await fetchTech(routeProcessed);
-  /* TODO: Comprobar porqué se muestra el inuzuka en todos lados*/
-  const dataAbility = await fetchAbilitys(routeProcessed);
-  
-  return renderPage(dataTech, dataAbility);
-}
-
-function processUrl(currentRoute){
-    const sinHash = currentRoute.replace(/^#/, '');
-    const decodificada = decodeURI(sinHash);
-    return decodificada.split('/');
-}
 
 function renderPage(dataTech, dataAbility) {
-  if (!Array.isArray(dataTech)) return '<p>No hay datos.</p>';
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("wrapper-card");
 
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('wrapper-card');  
-  
-  wrapper.innerHTML = Object.values(dataAbility).map(ability => `
+  if (!Array.isArray(dataTech)) return wrapper;
+
+  wrapper.innerHTML = Object.values(dataAbility).map(
+    (ability) => `
     <div class="card">
         <div class="title-ability">${ability.category_name}</div>
         <div class="ability-effect">
-            <div class="ability-image" style="background-image: url('${ability.image_url}')"></div>
+            <div class="ability-image" style="background-image: url('${
+              ability.image_url
+            }')"></div>
             <div class="effect">${ability.description}</div>
             <div class="effect">${ability.stats}</div>
             <div class="effect"><b><span class="destacado">Características:</span> </b><br>
-            - ${ability.abilities.map(a => a)}</div>
+            - ${ability.abilities.map((a) => a)}</div>
         </div>
     </div>
-  `)
+  `
+  );
 
-         wrapper.innerHTML += Object.values(dataTech).map(tech => `
+  wrapper.innerHTML += Object.values(dataTech)
+    .map(
+      (tech) => `
             <div class="card">
                 <div class="title">${tech.technique_name} - ${tech.japanese_name}</div>
                 <div class="tech-type">${tech.type_name}</div>
@@ -61,7 +46,9 @@ function renderPage(dataTech, dataAbility) {
                 </div>
                 
             </div>
-        `).join('');
-        
-        return wrapper;
+        `
+    )
+    .join("");
+
+  return wrapper;
 }

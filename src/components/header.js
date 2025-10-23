@@ -195,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // === Funciones auxiliares ===
+// TODO: Cambiar al archivo de service supabase
 async function fetchData() {
   try {
     const response = await fetch(URL + "navigation_menu?active_menu=eq.true", {

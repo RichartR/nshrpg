@@ -7,9 +7,7 @@ function renderFooter(){
     footer.classList.add('footer');
 
     footer.innerHTML = `
-        <footer class="site-footer">
-            &copy; 2025 Tu Nombre o Proyecto. Todos los derechos reservados.
-        </footer>
+            &copy; 2025 NSHRPG. Todos los derechos reservados.
     `
     return footer;
 }
