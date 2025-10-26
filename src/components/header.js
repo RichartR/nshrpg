@@ -1,9 +1,7 @@
 export { renderHeader };
 import "../css/header.scss";
-import { URL, KEY } from "../environment.env";
 
-async function renderHeader() {
-  const menuData = await fetchData();
+async function renderHeader(menuData) {
   const affiliations = obtainAffiliations(menuData);
   const submenu = obtainSubMenus(menuData);
   const subcategories = obtainSubCategories(menuData);
@@ -195,36 +193,19 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // === Funciones auxiliares ===
-// TODO: Cambiar al archivo de service supabase
-async function fetchData() {
-  try {
-    const response = await fetch(URL + "navigation_menu?active_menu=eq.true", {
-      method: "GET",
-      headers: {
-        apiKey: KEY,
-        Authorization: "Bearer " + KEY,
-      },
-    });
-    if (!response.ok) throw new Error("Network response was not ok");
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error al obtener los datos:", error);
-    return [];
-  }
-}
 
 function obtainAffiliations(data) {
-  const affiliations = new Set(data.map((item) => item.abbreviation));
+  const affiliations = new Set(data.map((item) => item.affiliation_abbr));
+  
   return [...affiliations];
 }
 
-function obtainSubMenus(data) {
+function obtainSubMenus(data) { 
   const subMenus = {};
   data
     .filter((item) => item.category_name !== null)
     .forEach((item) => {
-      const aff = item.abbreviation;
+      const aff = item.affiliation_abbr;
       const cat = item.category_name;
       if (!subMenus[aff]) subMenus[aff] = new Set();
       subMenus[aff].add(cat);
@@ -238,7 +219,7 @@ function obtainSubMenus(data) {
 function obtainSubCategories(data) {
   const subCategories = {};
   data
-    .filter((item) => item.has_subcategories)
+    .filter((item) => item.subcategory_name !== null)
     .forEach((item) => {
       const cat = item.category_name;
       const sub = item.subcategory_name;

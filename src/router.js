@@ -1,5 +1,5 @@
 // router.js
-import { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController } from "./controller/controller.js";
+import { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController, renderContentCategoriesController, processUrl } from "./controller/controller.js";
 export { router }
 export { getCurrentRoute }
 
@@ -12,24 +12,24 @@ const routes = new Map([
   ['/#', techPageController],
   ['#Glosario', renderGeneralGlossaryController],
   ['#login', techPageController],
-  ['#Konohagakure', renderVillageGlossaryController],
-  ['#Konohagakure/Clan%20Inuzuka', techPageController],
-  ['#Sunagakure', renderVillageGlossaryController],
-  ['#Iwagakure', renderVillageGlossaryController],
-  ['#Kumogakure', renderVillageGlossaryController],
-  ['#Kirigakure', renderVillageGlossaryController],
+/* 
+  ['#Konohagakure/Clan%20Inuzuka/generales', techPageController], */
+
 ]);
 
 // Función de router
 async function router(route, container) {
   // Guardar la ruta actual antes de llamar al handler
   currentRoute = route;
-  
-  const handler = routes.get(route);
 
+  
+  
+  let handler = routes.get(route);
+  
   if (!handler) {
-    container.innerHTML = `<h2>Error 404</h2>`;
-    return;
+    const processedUrlForAdd = processUrl(route);
+    handlerRoutes(processedUrlForAdd);
+    handler = routes.get(route);
   }
 
   try {
@@ -44,4 +44,17 @@ async function router(route, container) {
 // Obtener la ruta actual
 function getCurrentRoute() {
   return currentRoute;
+}
+
+function handlerRoutes(processedUrl){
+  if(processedUrl.length == 1){
+    routes.set(currentRoute, renderVillageGlossaryController);
+  } else if (processedUrl.length == 2){
+    routes.set(currentRoute, renderContentCategoriesController);
+  } else if (processedUrl.length == 3){
+    routes.set(currentRoute, techPageController);
+  } else if (processedUrl.length == 4){
+    routes.set(currentRoute, techPageController);
+  }
+
 }

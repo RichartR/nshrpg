@@ -10,7 +10,7 @@ body {
 }
 
 .wrapper-village {
-  background-image: url("../images/bg-glosary.webp");
+  background-image: url("../images/villages-bg.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -22,25 +22,26 @@ body {
 }
 
 .main-box-village  {
-  height: 200px;
+  height: 350px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease;
-  width: 70%;
+  width: 75%;
   max-width: 1500px;
   margin: 0 auto 20px auto;
   background-size: 100%;
   background-position: 20% 60%;
   background-repeat: no-repeat;
+  border: 3px solid #000;
 }
 
 .main-box-village:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  width: 70%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: 75%;
 }
 
 .grid-container-village {

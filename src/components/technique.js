@@ -1,28 +1,34 @@
 export { renderPage };
 import "../css/card.scss";
 
-function renderPage(dataTech, dataAbility) {
+function renderPage(dataTech, dataAbility) {  
   const wrapper = document.createElement("div");
   wrapper.classList.add("wrapper-card");
 
   if (!Array.isArray(dataTech)) return wrapper;
 
   wrapper.innerHTML = Object.values(dataAbility).map(
-    (ability) => `
+  (ability) => `
     <div class="card">
         <div class="title-ability">${ability.category_name}</div>
         <div class="ability-effect">
-            <div class="ability-image" style="background-image: url('${
-              ability.image_url
-            }')"></div>
-            <div class="effect">${ability.description}</div>
-            <div class="effect">${ability.stats}</div>
-            <div class="effect"><b><span class="destacado">Características:</span> </b><br>
-            - ${ability.abilities.map((a) => a)}</div>
+            <div class="ability-image" style="background-image: url('${ability.image_url || ''}')"></div>
+            <div class="effect">${ability.description || ''}</div>
+            <div class="effect">${ability.stats || ''}</div>
+            ${
+              Array.isArray(ability.ability_names) && ability.ability_names.length > 0
+                ? `<div class="effect">
+                    <b><span class="destacado">Características:</span></b><br>
+                    ${ability.ability_names
+                      .map((a, i) => `- <b>${a}</b>: ${ability.ability_effects?.[i] || ''}`)
+                      .join('<br>')}
+                  </div>`
+                : ''
+            }
         </div>
     </div>
   `
-  );
+).join('');
 
   wrapper.innerHTML += Object.values(dataTech)
     .map(
