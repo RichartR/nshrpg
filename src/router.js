@@ -12,9 +12,6 @@ const routes = new Map([
   ['/#', techPageController],
   ['#Glosario', renderGeneralGlossaryController],
   ['#login', techPageController],
-/* 
-  ['#Konohagakure/Clan%20Inuzuka/generales', techPageController], */
-
 ]);
 
 // Función de router
@@ -22,8 +19,6 @@ async function router(route, container) {
   // Guardar la ruta actual antes de llamar al handler
   currentRoute = route;
 
-  
-  
   let handler = routes.get(route);
   
   if (!handler) {
@@ -51,7 +46,7 @@ function handlerRoutes(processedUrl){
     routes.set(currentRoute, renderVillageGlossaryController);
   } else if (processedUrl.length == 2){
     routes.set(currentRoute, renderContentCategoriesController);
-  } else if (processedUrl.length == 3){
+  } else if (processedUrl.length == 3){ //TODO ==3cl
     routes.set(currentRoute, techPageController);
   } else if (processedUrl.length == 4){
     routes.set(currentRoute, techPageController);
