@@ -14,13 +14,16 @@ async function techPageController() {
   
   // Obtener los datos en base a la ruta
   const dataTech = await fetchTech(routeProcessed);
-  console.log(dataTech);
+  console.log(routeProcessed);
   
   const dataAbility = await fetchAbilitys(routeProcessed);
-  console.log(dataAbility);
   
   //Renderizar la página
-  return renderPage(dataTech, dataAbility);
+  if(routeProcessed[3] === 'generales'){
+    return renderPage(dataTech, dataAbility) 
+  } 
+
+  return renderPage(dataTech, null);
 }
 
 function processUrl(currentRoute){
