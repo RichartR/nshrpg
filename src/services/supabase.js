@@ -1,7 +1,19 @@
 //import { URL, KEY } from '../environment.env';
 import { supabase } from "../environment.env";
 
-export { fetchTech, fetchAbilitys, fetchVillages, fetchVillageData, fetchMenuData, fetchContentCategories };
+export {
+  fetchTech,
+  fetchAbilitys,
+  fetchVillages,
+  fetchVillageData,
+  fetchMenuData,
+  fetchContentCategories,
+  signUp,
+  signIn,
+  signOut,
+  getCurrentUser,
+  getSession
+};
 
 async function fetchTech(routeProcessed) {
   console.log(routeProcessed);
@@ -127,19 +139,113 @@ async function fetchMenuData(){
   return categories || [];
 }
 
-async function fetchContentCategories(routeProcessed){  
+async function fetchContentCategories(routeProcessed){
   let { data: categories, error } = await supabase
     .from("technique_details")
     .select("*")
     .eq("affiliation_abbr", routeProcessed[0])
     .eq("category_name", routeProcessed[1])
-    .or("availability_type.eq.limited, availability_type.eq.exclusive");    
-  
+    .in("availability_type", ["limited", "exclusive"]);
+
   if (error) {
     console.error("Error de conexión:", error);
     return [];
-  } 
+  }
 
   return categories || [];
 }
 
+// ============= Funciones de Autenticación =============
+
+async function signUp(email, password, username) {
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username
+        }
+      }
+    });
+
+    if (error) throw error;
+
+    return { success: true, data, error: null };
+  } catch (error) {
+    console.error("Error en registro:", error);
+    return { success: false, data: null, error: error.message };
+  }
+}
+
+async function signIn(email, password) {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+
+    return { success: true, data, error: null };
+  } catch (error) {
+    console.error("Error en login:", error);
+    return { success: false, data: null, error: error.message };
+  }
+}
+
+async function signOut() {
+  try {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) throw error;
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+async function getCurrentUser() {
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error) throw error;
+
+    if (user) {
+      // Obtener el perfil del usuario incluyendo el rol
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        console.error("Error al obtener perfil:", profileError);
+        return user;
+      }
+
+      // Añadir el rol al objeto user
+      user.role = profile?.role || null;
+    }
+
+    return user;
+  } catch (error) {
+    console.error("Error al obtener usuario:", error);
+    return null;
+  }
+}
+
+async function getSession() {
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession();
+
+    if (error) throw error;
+
+    return session;
+  } catch (error) {
+    console.error("Error al obtener sesión:", error);
+    return null;
+  }
+}

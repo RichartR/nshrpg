@@ -1,55 +1,110 @@
-// router.js
-import { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController, renderContentCategoriesController, processUrl } from "./controller/controller.js";
-export { router }
-export { getCurrentRoute }
+import { fetchTech, fetchAbilitys, fetchVillageData, fetchVillages, fetchContentCategories } from './services/supabase.js';
+export { router, getCurrentRoute };
 
-
-// Ruta que viene del menú
 let currentRoute = "";
 
-const routes = new Map([
-  ['', techPageController],
-  ['/#', techPageController],
-  ['#Glosario', renderGeneralGlossaryController],
-  ['#login', techPageController],
-]);
-
-// Función de router
 async function router(route, container) {
-  // Guardar la ruta actual antes de llamar al handler
   currentRoute = route;
 
-  let handler = routes.get(route);
-  
-  if (!handler) {
-    const processedUrlForAdd = processUrl(route);
-    handlerRoutes(processedUrlForAdd);
-    handler = routes.get(route);
-  }
-
   try {
-    const elementDOM = await handler();
-    container.replaceChildren(elementDOM);
+    const component = await routeToComponent(route);
+    container.replaceChildren(component);
   } catch (error) {
     console.error('Error en la ruta:', error);
     container.innerHTML = `<p>Error 404</p>`;
   }
 }
 
-// Obtener la ruta actual
 function getCurrentRoute() {
   return currentRoute;
 }
 
-function handlerRoutes(processedUrl){
-  if(processedUrl.length == 1){
-    routes.set(currentRoute, renderVillageGlossaryController);
-  } else if (processedUrl.length == 2){
-    routes.set(currentRoute, renderContentCategoriesController);
-  } else if (processedUrl.length == 3){ //TODO ==3cl
-    routes.set(currentRoute, techPageController);
-  } else if (processedUrl.length == 4){
-    routes.set(currentRoute, techPageController);
+async function routeToComponent(route) {
+  const processedUrl = processUrl(route);
+
+  if (route === '' || route === '/#') {
+    return await createTechniquePage(processedUrl);
   }
 
+  if (route === '#Glosario') {
+    return await createGlobalGlossary();
+  }
+
+  if (route === '#login') {
+    return createAuthComponent('login');
+  }
+
+  if (route === '#register') {
+    return createAuthComponent('register');
+  }
+
+  if (processedUrl.length === 1) {
+    return await createVillageGlossary(processedUrl);
+  }
+
+  if (processedUrl.length === 2) {
+    return await createContentCategories(processedUrl);
+  }
+
+  if (processedUrl.length === 3 || processedUrl.length === 4) {
+    return await createTechniquePage(processedUrl);
+  }
+
+  return document.createElement('div');
+}
+
+function processUrl(currentRoute) {
+  const sinHash = currentRoute.replace(/^#/, '');
+  const decodificada = decodeURI(sinHash);
+  return decodificada.split('/');
+}
+
+function createAuthComponent(mode = 'login') {
+  const component = document.createElement('auth-component');
+  component.setMode(mode);
+  return component;
+}
+
+async function createTechniquePage(routeProcessed) {
+  const dataTech = await fetchTech(routeProcessed);
+  console.log(routeProcessed);
+
+  const dataAbility = await fetchAbilitys(routeProcessed);
+
+  const component = document.createElement('technique-page');
+
+  if (routeProcessed[3] === 'generales') {
+    component.setData(dataTech, dataAbility);
+  } else {
+    component.setData(dataTech, null);
+  }
+
+  return component;
+}
+
+async function createGlobalGlossary() {
+  const villages = await fetchVillages();
+
+  const component = document.createElement('global-glossary');
+  component.setVillages(villages);
+
+  return component;
+}
+
+async function createVillageGlossary(routeProcessed) {
+  const villageData = await fetchVillageData(routeProcessed);
+
+  const component = document.createElement('village-glossary');
+  component.setVillageData(villageData);  
+
+  return component;
+}
+
+async function createContentCategories(routeProcessed) {
+  const contentData = await fetchContentCategories(routeProcessed);
+
+  const component = document.createElement('content-categories');
+  component.setContentData(contentData, routeProcessed);
+
+  return component;
 }

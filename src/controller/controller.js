@@ -1,29 +1,25 @@
-import { renderGeneralGlossary } from "../components/globalGlossary.js";
-import { renderPage } from "../components/technique.js";
 import { fetchTech, fetchAbilitys, fetchMenuData, fetchVillageData, fetchVillages, fetchContentCategories } from '../services/supabase.js';
-import { renderVillageGlossary } from "../components/villageGlossary.js";
 import { getCurrentRoute } from "../router.js";
-import { renderHeader } from "../components/header.js";
-import { renderContentCategoriesGlossary } from "../components/contentCategoriesGlossary.js";
 export { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController, renderHeaderDataController, renderContentCategoriesController, processUrl };
 
-// Controlador crear técnica
 async function techPageController() {
   const currentRoute = getCurrentRoute();
-  const routeProcessed = processUrl(currentRoute);  
-  
-  // Obtener los datos en base a la ruta
+  const routeProcessed = processUrl(currentRoute);
+
   const dataTech = await fetchTech(routeProcessed);
   console.log(routeProcessed);
-  
-  const dataAbility = await fetchAbilitys(routeProcessed);
-  
-  //Renderizar la página
-  if(routeProcessed[3] === 'generales'){
-    return renderPage(dataTech, dataAbility) 
-  } 
 
-  return renderPage(dataTech, null);
+  const dataAbility = await fetchAbilitys(routeProcessed);
+
+  const component = document.createElement('technique-page');
+
+  if(routeProcessed[3] === 'generales'){
+    component.setData(dataTech, dataAbility);
+  } else {
+    component.setData(dataTech, null);
+  }
+
+  return component;
 }
 
 function processUrl(currentRoute){
@@ -32,35 +28,44 @@ function processUrl(currentRoute){
     return decodificada.split('/');
 }
 
-// Controlador crear glosario aldeas
 async function renderGeneralGlossaryController() {
     const villages = await fetchVillages();
 
-    return renderGeneralGlossary(villages); 
+    const component = document.createElement('global-glossary');
+    component.setVillages(villages);
+
+    return component;
 }
 
-// Controlador glosario de una aldea en concreto
 async function renderVillageGlossaryController() {
     const currentRoute = getCurrentRoute();
     const routeProcessed = processUrl(currentRoute);
 
     const villageData = await fetchVillageData(routeProcessed);
 
-    return renderVillageGlossary(villageData); 
+    const component = document.createElement('village-glossary');
+    component.setVillageData(villageData);
+
+    return component;
 }
 
 async function renderHeaderDataController(){
-    const menuData = await fetchMenuData();    
+    const menuData = await fetchMenuData();
 
-    return renderHeader(menuData);
+    const component = document.createElement('header-component');
+    await component.setMenuData(menuData);
+
+    return component;
 }
 
 async function renderContentCategoriesController(){
-    
     const currentRoute = getCurrentRoute();
     const routeProcessed = processUrl(currentRoute);
 
-    const contentData = await fetchContentCategories(routeProcessed);       
+    const contentData = await fetchContentCategories(routeProcessed);
 
-    return renderContentCategoriesGlossary(contentData, routeProcessed);
+    const component = document.createElement('content-categories');
+    component.setContentData(contentData, routeProcessed);
+
+    return component;
 }
