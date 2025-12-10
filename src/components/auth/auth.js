@@ -34,14 +34,16 @@ class AuthComponent extends HTMLElement {
 
   renderUserProfile() {
     this.innerHTML = `
-      <div class="auth-container">
-        <div class="auth-card">
-          <h2 class="auth-title">Perfil de Usuario</h2>
-          <div class="user-info">
-            <p><strong>Email:</strong> ${this.currentUser.email}</p>
-            <p><strong>Usuario:</strong> ${this.currentUser.user_metadata?.username || 'Sin nombre'}</p>
+      <div class="wrapper-auth">
+        <div class="auth-container">
+          <div class="auth-card">
+            <h2 class="auth-title">Perfil de Usuario</h2>
+            <div class="user-info">
+              <p><strong>Email:</strong> ${this.currentUser.email}</p>
+              <p><strong>Usuario:</strong> ${this.currentUser.user_metadata?.username || 'Sin nombre'}</p>
+            </div>
+            <button class="auth-button" id="logout-btn">Cerrar Sesión</button>
           </div>
-          <button class="auth-button" id="logout-btn">Cerrar Sesión</button>
         </div>
       </div>
     `;
@@ -49,48 +51,50 @@ class AuthComponent extends HTMLElement {
 
   renderAuthForm() {
     this.innerHTML = `
-      <div class="auth-container">
-        <div class="auth-card">
-          <h2 class="auth-title">${this.mode === 'login' ? 'Iniciar Sesión' : 'Registrarse'}</h2>
+      <div class="wrapper-auth">
+        <div class="auth-container">
+          <div class="auth-card">
+            <h2 class="auth-title">${this.mode === 'login' ? 'Iniciar Sesión' : 'Registrarse'}</h2>
 
-          <form class="auth-form" id="auth-form">
-            ${this.mode === 'register' ? `
+            <form class="auth-form" id="auth-form">
+              ${this.mode === 'register' ? `
+                <div class="form-group">
+                  <label for="username">Nombre de Usuario</label>
+                  <input type="text" id="username" name="username" required>
+                </div>
+              ` : ''}
+
               <div class="form-group">
-                <label for="username">Nombre de Usuario</label>
-                <input type="text" id="username" name="username" required>
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" required>
               </div>
-            ` : ''}
 
-            <div class="form-group">
-              <label for="email">Correo Electrónico</label>
-              <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-              <label for="password">Contraseña</label>
-              <input type="password" id="password" name="password" required minlength="6">
-            </div>
-
-            ${this.mode === 'register' ? `
               <div class="form-group">
-                <label for="confirm-password">Confirmar Contraseña</label>
-                <input type="password" id="confirm-password" name="confirm-password" required minlength="6">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required minlength="6">
               </div>
-            ` : ''}
 
-            <div class="error-message" id="error-message"></div>
-            <div class="success-message" id="success-message"></div>
+              ${this.mode === 'register' ? `
+                <div class="form-group">
+                  <label for="confirm-password">Confirmar Contraseña</label>
+                  <input type="password" id="confirm-password" name="confirm-password" required minlength="6">
+                </div>
+              ` : ''}
 
-            <button type="submit" class="auth-button" id="submit-btn">
-              ${this.mode === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
-            </button>
-          </form>
+              <div class="error-message" id="error-message"></div>
+              <div class="success-message" id="success-message"></div>
 
-          <div class="auth-switch">
-            ${this.mode === 'login'
-              ? '¿No tienes cuenta? <a href="#" id="switch-mode">Regístrate aquí</a>'
-              : '¿Ya tienes cuenta? <a href="#" id="switch-mode">Inicia sesión aquí</a>'
-            }
+              <button type="submit" class="auth-button" id="submit-btn">
+                ${this.mode === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
+              </button>
+            </form>
+
+            <div class="auth-switch">
+              ${this.mode === 'login'
+                ? '¿No tienes cuenta? <a href="#" id="switch-mode">Regístrate aquí</a>'
+                : '¿Ya tienes cuenta? <a href="#" id="switch-mode">Inicia sesión aquí</a>'
+              }
+            </div>
           </div>
         </div>
       </div>

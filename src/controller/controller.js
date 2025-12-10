@@ -1,13 +1,12 @@
-import { fetchTech, fetchAbilitys, fetchMenuData, fetchVillageData, fetchVillages, fetchContentCategories } from '../services/supabase.js';
+import { fetchTech, fetchAbilitys, fetchMenuData, fetchVillageData, fetchVillages, fetchContentCategories, updateAffiliationStatus, updateCategoryStatus, updateSubcategoryStatus, fetchAffiliationById, updateAffiliation, fetchCategoryById, updateCategory, fetchSubcategoryById, updateSubcategory } from '../services/supabase.js';
 import { getCurrentRoute } from "../router.js";
-export { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController, renderHeaderDataController, renderContentCategoriesController, processUrl };
+export { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController, renderHeaderDataController, renderContentCategoriesController, toggleAffiliationController, toggleCategoryController, toggleSubcategoryController, updateAffiliationController, updateCategoryController, updateSubcategoryController, processUrl };
 
 async function techPageController() {
   const currentRoute = getCurrentRoute();
   const routeProcessed = processUrl(currentRoute);
 
   const dataTech = await fetchTech(routeProcessed);
-  console.log(routeProcessed);
 
   const dataAbility = await fetchAbilitys(routeProcessed);
 
@@ -68,4 +67,34 @@ async function renderContentCategoriesController(){
     component.setContentData(contentData, routeProcessed);
 
     return component;
+}
+
+async function toggleAffiliationController(affiliationId, newStatus) {
+  const result = await updateAffiliationStatus(affiliationId, newStatus);
+  return result;
+}
+
+async function toggleCategoryController(categoryId, newStatus) {
+  const result = await updateCategoryStatus(categoryId, newStatus);
+  return result;
+}
+
+async function toggleSubcategoryController(subcategoryId, newStatus) {
+  const result = await updateSubcategoryStatus(subcategoryId, newStatus);
+  return result;
+}
+
+async function updateAffiliationController(affiliationId, updates) {
+  const result = await updateAffiliation(affiliationId, updates);
+  return result;
+}
+
+async function updateCategoryController(categoryId, updates) {
+  const result = await updateCategory(categoryId, updates);
+  return result;
+}
+
+async function updateSubcategoryController(subcategoryId, updates) {
+  const result = await updateSubcategory(subcategoryId, updates);
+  return result;
 }

@@ -1,6 +1,6 @@
 import "../../css/contentDashboard.scss";
 
-class ContentComponent extends HTMLElement {
+class ContentDashboardComponent extends HTMLElement {
   constructor() {
     super();
   }
@@ -39,4 +39,4 @@ class ContentComponent extends HTMLElement {
   }
 }
 
-export default ContentComponent;
+export default ContentDashboardComponent;

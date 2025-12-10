@@ -1,16 +1,58 @@
 import "../../css/header.scss";
-import { getCurrentUser, signOut } from "../../services/supabase.js";
+import { getCurrentUser, signOut, fetchMenuData } from "../../services/supabase.js";
 
 class HeaderComponent extends HTMLElement {
   constructor() {
     super();
     this.menuData = null;
     this.currentUser = null;
+    this.affiliationsUpdateHandler = null;
+    this.categoriesUpdateHandler = null;
+    this.subcategoriesUpdateHandler = null;
   }
 
   async setMenuData(menuData) {
     this.menuData = menuData;
     await this.checkUser();
+    await this.render();
+    this.setupEventListeners();
+    this.setupContentUpdateListeners();
+  }
+
+  setupContentUpdateListeners() {
+    // Remove previous listeners if exist
+    if (this.affiliationsUpdateHandler) {
+      window.removeEventListener('affiliationsUpdated', this.affiliationsUpdateHandler);
+    }
+    if (this.categoriesUpdateHandler) {
+      window.removeEventListener('categoriesUpdated', this.categoriesUpdateHandler);
+    }
+    if (this.subcategoriesUpdateHandler) {
+      window.removeEventListener('subcategoriesUpdated', this.subcategoriesUpdateHandler);
+    }
+
+    // Create new listeners
+    this.affiliationsUpdateHandler = async () => {
+      await this.refreshMenuData();
+    };
+
+    this.categoriesUpdateHandler = async () => {
+      await this.refreshMenuData();
+    };
+
+    this.subcategoriesUpdateHandler = async () => {
+      await this.refreshMenuData();
+    };
+
+    // Add listeners
+    window.addEventListener('affiliationsUpdated', this.affiliationsUpdateHandler);
+    window.addEventListener('categoriesUpdated', this.categoriesUpdateHandler);
+    window.addEventListener('subcategoriesUpdated', this.subcategoriesUpdateHandler);
+  }
+
+  async refreshMenuData() {
+    const freshMenuData = await fetchMenuData();
+    this.menuData = freshMenuData;
     await this.render();
     this.setupEventListeners();
   }
@@ -270,6 +312,19 @@ class HeaderComponent extends HTMLElement {
       window.location.hash = '#';
     } else {
       alert('Error al cerrar sesión: ' + result.error);
+    }
+  }
+
+  disconnectedCallback() {
+    // Cleanup event listeners when component is removed from DOM
+    if (this.affiliationsUpdateHandler) {
+      window.removeEventListener('affiliationsUpdated', this.affiliationsUpdateHandler);
+    }
+    if (this.categoriesUpdateHandler) {
+      window.removeEventListener('categoriesUpdated', this.categoriesUpdateHandler);
+    }
+    if (this.subcategoriesUpdateHandler) {
+      window.removeEventListener('subcategoriesUpdated', this.subcategoriesUpdateHandler);
     }
   }
 }

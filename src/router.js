@@ -1,4 +1,4 @@
-import { fetchTech, fetchAbilitys, fetchVillageData, fetchVillages, fetchContentCategories } from './services/supabase.js';
+import { fetchTech, fetchAbilitys, fetchVillageData, fetchVillages, fetchContentCategories, getCurrentUser } from './services/supabase.js';
 export { router, getCurrentRoute };
 
 let currentRoute = "";
@@ -28,6 +28,48 @@ async function routeToComponent(route) {
 
   if (route === '#Glosario') {
     return await createGlobalGlossary();
+  }
+
+  // Verificar permisos de administrador para rutas de Contenido
+  if (route === '#Contenido' || route.startsWith('#Contenido/')) {
+    const user = await getCurrentUser();
+
+    if (!user || user.role !== 'ADMIN') {
+      alert('Acceso denegado. Necesitas permisos de administrador.');
+      window.location.hash = '#';
+      return await createTechniquePage(processedUrl);
+    }
+  }
+
+  if (route === '#Contenido') {
+    return createContentComponent();
+  }
+
+  if (route === '#Contenido/afiliaciones') {
+    return createContentAffiliations();
+  }
+
+  if (route === '#Contenido/categorias') {
+    return createContentCategoriesManagement();
+  }
+
+  if (route === '#Contenido/subcategorias') {
+    return createContentSubcategories();
+  }
+
+  if (route.startsWith('#Contenido/afiliaciones/editar/')) {
+    const id = route.split('/')[3];
+    return createContentAffiliationsEdit(id);
+  }
+
+  if (route.startsWith('#Contenido/categorias/editar/')) {
+    const id = route.split('/')[3];
+    return createContentCategoriesEdit(id);
+  }
+
+  if (route.startsWith('#Contenido/subcategorias/editar/')) {
+    const id = route.split('/')[3];
+    return createContentSubcategoriesEdit(id);
   }
 
   if (route === '#login') {
@@ -67,7 +109,6 @@ function createAuthComponent(mode = 'login') {
 
 async function createTechniquePage(routeProcessed) {
   const dataTech = await fetchTech(routeProcessed);
-  console.log(routeProcessed);
 
   const dataAbility = await fetchAbilitys(routeProcessed);
 
@@ -106,5 +147,43 @@ async function createContentCategories(routeProcessed) {
   const component = document.createElement('content-categories');
   component.setContentData(contentData, routeProcessed);
 
+  return component;
+}
+
+function createContentComponent() {
+  const component = document.createElement('content-component');
+  return component;
+}
+
+function createContentAffiliations() {
+  const component = document.createElement('content-affiliations');
+  return component;
+}
+
+function createContentCategoriesManagement() {
+  const component = document.createElement('content-categories-management');
+  return component;
+}
+
+function createContentSubcategories() {
+  const component = document.createElement('content-subcategories');
+  return component;
+}
+
+function createContentAffiliationsEdit(id) {
+  const component = document.createElement('content-affiliations-edit');
+  component.setAffiliationId(id);
+  return component;
+}
+
+function createContentCategoriesEdit(id) {
+  const component = document.createElement('content-categories-edit');
+  component.setCategoryId(id);
+  return component;
+}
+
+function createContentSubcategoriesEdit(id) {
+  const component = document.createElement('content-subcategories-edit');
+  component.setSubcategoryId(id);
   return component;
 }
