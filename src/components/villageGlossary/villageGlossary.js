@@ -30,10 +30,10 @@ class VillageGlossaryComponent extends HTMLElement {
       gridContainer.appendChild(gridItem);
     });
 
-    if (noCategoryItems.length > 0) {
+    /* if (noCategoryItems.length > 0) {
       const specialItems = this.createSpecialGridItems(noCategoryItems[0]);
       specialItems.forEach(item => gridContainer.appendChild(item));
-    }
+    } */
 
     wrapper.appendChild(gridContainer);
     this.innerHTML = '';
@@ -49,8 +49,13 @@ class VillageGlossaryComponent extends HTMLElement {
   createVillageHeader(villageData) {
     const headerBox = document.createElement('div');
     headerBox.classList.add('main-box-village');
-    headerBox.textContent = villageData[0].affiliation_name;
     headerBox.style.backgroundImage = `url('${villageData[0].affiliation_image_glossary_url}')`;
+
+    const textSpan = document.createElement('span');
+    textSpan.classList.add('village-header-text');
+    textSpan.textContent = villageData[0].affiliation_name;
+
+    headerBox.appendChild(textSpan);
     return headerBox;
   }
 
@@ -80,6 +85,7 @@ class VillageGlossaryComponent extends HTMLElement {
   }
 
   createCategoryGridItem(item) {
+    
     const gridItem = document.createElement('div');
     gridItem.classList.add('grid-item-village');
 
@@ -95,7 +101,7 @@ class VillageGlossaryComponent extends HTMLElement {
     return gridItem;
   }
 
-  createSpecialGridItems(item) {
+  /* createSpecialGridItems(item) {
     const gridItems = [];
 
     const gridItemTecnicas = document.createElement('div');
@@ -127,7 +133,7 @@ class VillageGlossaryComponent extends HTMLElement {
     gridItems.push(gridItemMaterial);
 
     return gridItems;
-  }
+  } */
 }
 
 export default VillageGlossaryComponent;

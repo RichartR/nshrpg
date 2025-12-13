@@ -1,16 +1,39 @@
 import "../../css/glossaryGeneral.scss";
+import { supabase } from "../../environment.env";
 
 class ContentCategoriesComponent extends HTMLElement {
   constructor() {
     super();
     this.contentData = [];
     this.routeProcessed = [];
+    this.categoryImage = '';
   }
 
-  setContentData(contentData, routeProcessed) {
+  async setContentData(contentData, routeProcessed) {
     this.contentData = contentData;
     this.routeProcessed = routeProcessed;
+    await this.loadCategoryImage(routeProcessed[1]);
     this.render();
+  }
+
+  async loadCategoryImage(categoryName) {
+    try {
+      const { data, error } = await supabase
+        .from('entity_profile_abilities_view')
+        .select('img_url')
+        .eq('category_name', categoryName)
+        .maybeSingle();
+
+      if (!error && data) {
+        this.categoryImage = data.img_url;
+      }
+      // Si no hay datos, simplemente no se carga imagen (sin error)
+    } catch (err) {
+      // Solo mostrar errores que NO sean de "no encontrado"
+      if (err.code !== 'PGRST116') {
+        console.error('Error cargando imagen de categoría:', err);
+      }
+    }
   }
 
   render() {
@@ -53,7 +76,7 @@ class ContentCategoriesComponent extends HTMLElement {
     link.className = 'village-link-general';
 
     const image = document.createElement('img');
-    image.src = '';
+    image.src = this.categoryImage || '';
     image.alt = `Técnicas Generales ${routeProcessed[1]}`;
 
     const nameDiv = document.createElement('div');

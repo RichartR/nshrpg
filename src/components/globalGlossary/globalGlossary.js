@@ -43,6 +43,7 @@ class GlobalGlossaryComponent extends HTMLElement {
   }
 
   createGeneralGridItem(village) {
+    
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item-general';
 

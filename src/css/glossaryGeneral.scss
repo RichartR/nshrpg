@@ -51,18 +51,43 @@ body {
 }
 
 .grid-item-general .village-name-general {
-  padding: 10px;
-  font-size: 16px;
-  font-weight: bold;
+  padding: 16px 12px;
+  font-size: 18px;
+  font-weight: 700;
   margin: 0;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #212529;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+  }
 }
 
 .grid-item-general a.village-link-general:hover .village-name-general {
-  background-color: black;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2.5px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  &::before {
+    left: 100%;
+  }
 }
 
 /* Responsive: Tablet (hasta 768px) → 2 columnas */
@@ -78,8 +103,9 @@ body {
   }
 
   .grid-item-general .village-name-general {
-    font-size: 14px;
-    padding: 8px;
+    font-size: 15px;
+    padding: 12px 10px;
+    letter-spacing: 1.5px;
   }
 }
 
@@ -97,7 +123,8 @@ body {
   }
 
   .grid-item-general .village-name-general {
-    font-size: 15px;
-    padding: 10px;
+    font-size: 16px;
+    padding: 14px 10px;
+    letter-spacing: 1.5px;
   }
 }

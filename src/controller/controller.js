@@ -1,4 +1,4 @@
-import { fetchTech, fetchAbilitys, fetchMenuData, fetchVillageData, fetchVillages, fetchContentCategories, updateAffiliationStatus, updateCategoryStatus, updateSubcategoryStatus, fetchAffiliationById, updateAffiliation, fetchCategoryById, updateCategory, fetchSubcategoryById, updateSubcategory } from '../services/supabase.js';
+import { fetchTech, fetchAbilitys, fetchMenuData, fetchVillageData, fetchVillages, fetchContentCategories, updateAffiliationStatus, updateCategoryStatus, updateSubcategoryStatus, updateAffiliation,  updateCategory, updateSubcategory } from '../services/supabase.js';
 import { getCurrentRoute } from "../router.js";
 export { renderGeneralGlossaryController, techPageController, renderVillageGlossaryController, renderHeaderDataController, renderContentCategoriesController, toggleAffiliationController, toggleCategoryController, toggleSubcategoryController, updateAffiliationController, updateCategoryController, updateSubcategoryController, processUrl };
 

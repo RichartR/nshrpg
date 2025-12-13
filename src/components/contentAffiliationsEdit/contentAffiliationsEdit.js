@@ -104,24 +104,6 @@ class ContentAffiliationsEditComponent extends HTMLElement {
             </div>
 
             <div class="form-group">
-              <label>Símbolo Actual:</label>
-              ${this.affiliationData.affiliation_symbol ? `
-                <div class="current-image icon">
-                  <img src="${this.affiliationData.affiliation_symbol}" alt="Símbolo ${this.affiliationData.affiliation_name}" />
-                </div>
-              ` : '<p class="no-image">No hay símbolo actual</p>'}
-              <label for="symbol_file" class="file-label">Nuevo Símbolo:</label>
-              <input
-                type="file"
-                id="symbol_file"
-                name="symbol_file"
-                accept="image/*"
-                class="file-input"
-              />
-              <small class="file-hint">Selecciona un símbolo para reemplazar el actual</small>
-            </div>
-
-            <div class="form-group">
               <label for="menu_order">Orden en el Menú:</label>
               <input
                 type="number"
@@ -172,22 +154,12 @@ class ContentAffiliationsEditComponent extends HTMLElement {
       // Manejar subida de imagen principal
       const imageFile = formData.get('image_file');
       if (imageFile && imageFile.size > 0) {
-        const result = await uploadImageToStorage(imageFile, 'villages', 'affiliations');
+        const abbreviation = formData.get('abbreviation');
+        const result = await uploadImageToStorage(imageFile, 'villages', '', abbreviation);
         if (result.success) {
           updates.image_url = result.url;
         } else {
           throw new Error('Error al subir imagen: ' + result.error);
-        }
-      }
-
-      // Manejar subida de símbolo
-      const symbolFile = formData.get('symbol_file');
-      if (symbolFile && symbolFile.size > 0) {
-        const result = await uploadImageToStorage(symbolFile, 'villages', 'symbols');
-        if (result.success) {
-          updates.affiliation_symbol = result.url;
-        } else {
-          throw new Error('Error al subir símbolo: ' + result.error);
         }
       }
 

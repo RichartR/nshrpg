@@ -64,16 +64,6 @@ class ContentSubcategoriesEditComponent extends HTMLElement {
             </div>
 
             <div class="form-group">
-              <label for="abbreviation">Abreviatura:</label>
-              <input
-                type="text"
-                id="abbreviation"
-                name="abbreviation"
-                value="${this.subcategoryData.abbreviation || ''}"
-              />
-            </div>
-
-            <div class="form-group">
               <label for="category_id">Categoría:</label>
               <select
                 id="category_id"
@@ -100,16 +90,16 @@ class ContentSubcategoriesEditComponent extends HTMLElement {
 
             <div class="form-group">
               <label>Imagen Actual:</label>
-              ${this.subcategoryData.img_url ? `
+              ${this.subcategoryData.image_url ? `
                 <div class="current-image">
-                  <img src="${this.subcategoryData.img_url}" alt="${this.subcategoryData.subcategory_name}" />
+                  <img src="${this.subcategoryData.image_url}" alt="${this.subcategoryData.subcategory_name}" />
                 </div>
               ` : '<p class="no-image">No hay imagen actual</p>'}
-              <label for="img_file" class="file-label">Nueva Imagen:</label>
+              <label for="image_file" class="file-label">Nueva Imagen:</label>
               <input
                 type="file"
-                id="img_file"
-                name="img_file"
+                id="image_file"
+                name="image_file"
                 accept="image/*"
                 class="file-input"
               />
@@ -153,7 +143,6 @@ class ContentSubcategoriesEditComponent extends HTMLElement {
     const formData = new FormData(e.target);
     const updates = {
       subcategory_name: formData.get('subcategory_name'),
-      abbreviation: formData.get('abbreviation'),
       category_id: parseInt(formData.get('category_id')),
       description: formData.get('description'),
       menu_order: parseInt(formData.get('menu_order'))
@@ -165,11 +154,12 @@ class ContentSubcategoriesEditComponent extends HTMLElement {
 
     try {
       // Manejar subida de imagen
-      const imgFile = formData.get('img_file');
-      if (imgFile && imgFile.size > 0) {
-        const result = await uploadImageToStorage(imgFile, 'subcategories', 'images');
+      const imageFile = formData.get('image_file');
+      if (imageFile && imageFile.size > 0) {
+        const subcategoryName = formData.get('subcategory_name');
+        const result = await uploadImageToStorage(imageFile, 'subcategories', '', subcategoryName);
         if (result.success) {
-          updates.img_url = result.url;
+          updates.image_url = result.url;
         } else {
           throw new Error('Error al subir imagen: ' + result.error);
         }

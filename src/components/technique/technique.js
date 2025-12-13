@@ -64,7 +64,7 @@ class TechniquePageComponent extends HTMLElement {
 
     const abilityImage = document.createElement("div");
     abilityImage.classList.add("ability-image");
-    abilityImage.style.backgroundImage = `url('${ability.image_url || ''}')`;
+    abilityImage.style.backgroundImage = `url('${ability.img_url || ''}')`;
 
     const description = document.createElement("div");
     description.classList.add("effect");
@@ -104,7 +104,19 @@ class TechniquePageComponent extends HTMLElement {
 
     ability.ability_names.forEach((abilityName, index) => {
       const characteristic = document.createElement("div");
-      characteristic.textContent = `- ${abilityName}: ${ability.ability_effects?.[index] || ''}`;
+
+      // Guión
+      characteristic.appendChild(document.createTextNode('- '));
+
+      // Nombre en negrita
+      const strong = document.createElement('strong');
+      strong.textContent = abilityName;
+      characteristic.appendChild(strong);
+
+      // Resto del efecto
+      const effectText = `: ${ability.ability_effects?.[index] || ''}`;
+      characteristic.appendChild(document.createTextNode(effectText));
+
       characteristics.appendChild(characteristic);
     });
 

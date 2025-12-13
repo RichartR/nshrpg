@@ -224,6 +224,11 @@ async function getCurrentUser() {
   try {
     const { data: { user }, error } = await supabase.auth.getUser();
 
+    // Si no hay sesión activa, simplemente retornar null sin mostrar error
+    if (error?.message === 'Auth session missing!') {
+      return null;
+    }
+
     if (error) throw error;
 
     if (user) {
@@ -371,8 +376,6 @@ async function updateSubcategoryStatus(subcategoryId, isActive) {
   }
 }
 
-// ============= Funciones de Edición Completa =============
-
 async function fetchAffiliationById(affiliationId) {
   try {
     const { data, error } = await supabase
@@ -478,7 +481,7 @@ async function updateSubcategory(subcategoryId, updates) {
   }
 }
 
-// ============= Funciones de Subida de Imágenes =============
+// Imágenes
 
 async function convertToWebP(file) {
   return new Promise((resolve, reject) => {
@@ -513,14 +516,22 @@ async function convertToWebP(file) {
   });
 }
 
-async function uploadImageToStorage(file, bucketName, folder = '') {
+async function uploadImageToStorage(file, bucketName, folder = '', customFileName = null) {
   try {
     // Convertir imagen a WebP
     const webpBlob = await convertToWebP(file);
 
-    // Generar nombre único para el archivo
-    const timestamp = Date.now();
-    const fileName = `${timestamp}.webp`;
+    // Generar nombre del archivo
+    let fileName;
+    if (customFileName) {
+      // Usar nombre personalizado
+      fileName = `${customFileName}.webp`;
+    } else {
+      // Generar nombre único con timestamp
+      const timestamp = Date.now();
+      fileName = `${timestamp}.webp`;
+    }
+
     const filePath = folder ? `${folder}/${fileName}` : fileName;
 
     // Subir a Supabase Storage
@@ -529,17 +540,19 @@ async function uploadImageToStorage(file, bucketName, folder = '') {
       .upload(filePath, webpBlob, {
         contentType: 'image/webp',
         cacheControl: '3600',
-        upsert: false
+        upsert: true
       });
 
     if (error) throw error;
 
-    // Obtener URL pública
-    const { data: publicUrlData } = supabase.storage
+    // Obtener URL firmada con expiración de 2 años (63072000 segundos)
+    const { data: signedUrlData, error: signedError } = await supabase.storage
       .from(bucketName)
-      .getPublicUrl(filePath);
+      .createSignedUrl(filePath, 63072000);
 
-    return { success: true, url: publicUrlData.publicUrl, error: null };
+    if (signedError) throw signedError;
+
+    return { success: true, url: signedUrlData.signedUrl, error: null };
   } catch (error) {
     console.error('Error al subir imagen:', error);
     return { success: false, url: null, error: error.message };
