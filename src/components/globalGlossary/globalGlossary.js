@@ -52,7 +52,9 @@ class GlobalGlossaryComponent extends HTMLElement {
     link.className = 'village-link-general';
 
     const image = document.createElement('img');
-    image.src = village.image_url;
+    if (village.image_url) {
+      image.src = village.image_url;
+    }
     image.alt = village.affiliation_name;
 
     const nameDiv = document.createElement('div');

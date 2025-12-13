@@ -49,7 +49,9 @@ class VillageGlossaryComponent extends HTMLElement {
   createVillageHeader(villageData) {
     const headerBox = document.createElement('div');
     headerBox.classList.add('main-box-village');
-    headerBox.style.backgroundImage = `url('${villageData[0].affiliation_image_glossary_url}')`;
+    if (villageData[0].affiliation_image_glossary_url) {
+      headerBox.style.backgroundImage = `url('${villageData[0].affiliation_image_glossary_url}')`;
+    }
 
     const textSpan = document.createElement('span');
     textSpan.classList.add('village-header-text');
@@ -85,13 +87,15 @@ class VillageGlossaryComponent extends HTMLElement {
   }
 
   createCategoryGridItem(item) {
-    
+
     const gridItem = document.createElement('div');
     gridItem.classList.add('grid-item-village');
 
     const link = document.createElement('a');
     link.href = "#" + item.affiliation_abbr + "/" + item.category_name;
-    link.style.backgroundImage = `url('${item.category_image_url}')`;
+    if (item.category_image_url) {
+      link.style.backgroundImage = `url('${item.category_image_url}')`;
+    }
 
     const span = document.createElement('span');
     span.textContent = item.category_name;

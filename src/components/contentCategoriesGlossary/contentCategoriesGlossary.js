@@ -76,7 +76,9 @@ class ContentCategoriesComponent extends HTMLElement {
     link.className = 'village-link-general';
 
     const image = document.createElement('img');
-    image.src = this.categoryImage || '';
+    if (this.categoryImage) {
+      image.src = this.categoryImage;
+    }
     image.alt = `Técnicas Generales ${routeProcessed[1]}`;
 
     const nameDiv = document.createElement('div');
@@ -99,7 +101,9 @@ class ContentCategoriesComponent extends HTMLElement {
     link.className = 'village-link-general';
 
     const image = document.createElement('img');
-    image.src = content.image_url;
+    if (content.image_url) {
+      image.src = content.image_url;
+    }
     image.alt = content.affiliation_name;
 
     const nameDiv = document.createElement('div');
