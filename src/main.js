@@ -3,6 +3,7 @@ import { fetchMenuData } from './services/supabase.js';
 
 import HeaderComponent from './components/header/header.js';
 import FooterComponent from './components/footer/footer.js';
+import WelcomeComponent from './components/welcome/welcome.js';
 import GlobalGlossaryComponent from './components/globalGlossary/globalGlossary.js';
 import VillageGlossaryComponent from './components/villageGlossary/villageGlossary.js';
 import ContentCategoriesComponent from './components/contentCategoriesGlossary/contentCategoriesGlossary.js';
@@ -18,6 +19,7 @@ import ContentSubcategoriesEditComponent from './components/contentSubcategories
 
 customElements.define('header-component', HeaderComponent);
 customElements.define('footer-component', FooterComponent);
+customElements.define('welcome-component', WelcomeComponent);
 customElements.define('global-glossary', GlobalGlossaryComponent);
 customElements.define('village-glossary', VillageGlossaryComponent);
 customElements.define('content-categories', ContentCategoriesComponent);

@@ -23,7 +23,7 @@ async function routeToComponent(route) {
   const processedUrl = processUrl(route);
 
   if (route === '' || route === '/#') {
-    return await createTechniquePage(processedUrl);
+    return createWelcome();
   }
 
   if (route === '#Glosario') {
@@ -185,5 +185,10 @@ function createContentCategoriesEdit(id) {
 function createContentSubcategoriesEdit(id) {
   const component = document.createElement('content-subcategories-edit');
   component.setSubcategoryId(id);
+  return component;
+}
+
+function createWelcome() {
+  const component = document.createElement('welcome-component');
   return component;
 }
