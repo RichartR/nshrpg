@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrapper-glossary-general {
+  background-image: url("../images/bg-glosary.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px 0;
+  min-height: calc(100dvh - 60px); /* altura del viewport menos el footer */
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.grid-container-general {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+  width: 80vw;
+  max-width: 1200px;
+  place-content: center;
+  margin: 0 auto;
+}
+
+.grid-item-general {
+  background: white;
+  border: 2px solid #000;
+  padding: 0;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.grid-item-general a.village-link-general {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.grid-item-general img {
+    border-bottom: 2px solid #000;
+    width: 100%;
+    height: 150px;
+    min-height: 230px;
+    object-fit: cover;
+    display: block;
+}
+
+.grid-item-general .village-name-general {
+  padding: 16px 12px;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #212529;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+  }
+}
+
+.grid-item-general a.village-link-general:hover .village-name-general {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2.5px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  &::before {
+    left: 100%;
+  }
+}
+
+/* Responsive: Tablet (hasta 768px) → 2 columnas */
+@media (max-width: 768px) {
+  .grid-container-general {
+    grid-template-columns: repeat(2, 1fr);
+    width: 90vw;
+    gap: 16px;
+  }
+
+  .grid-item-general img {
+    height: 130px;
+  }
+
+  .grid-item-general .village-name-general {
+    font-size: 15px;
+    padding: 12px 10px;
+    letter-spacing: 1.5px;
+  }
+}
+
+/* Responsive: Móvil (hasta 480px) → 1 columna */
+@media (max-width: 480px) {
+  .grid-container-general {
+    grid-template-columns: 1fr;
+    width: 95vw;
+    gap: 14px;
+    padding: 15px;
+  }
+
+  .grid-item-general img {
+    height: 120px;
+  }
+
+  .grid-item-general .village-name-general {
+    font-size: 16px;
+    padding: 14px 10px;
+    letter-spacing: 1.5px;
+  }
+}
