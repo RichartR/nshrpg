@@ -64,7 +64,7 @@ class TechniquePageComponent extends HTMLElement {
 
     const abilityImage = document.createElement("div");
     abilityImage.classList.add("ability-image");
-    abilityImage.style.backgroundImage = `url('${ability.img_url || ''}')`;
+    abilityImage.style.backgroundImage = `url('${ability.img_url}')`;
 
     const description = document.createElement("div");
     description.classList.add("effect");

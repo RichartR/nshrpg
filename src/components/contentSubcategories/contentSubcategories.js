@@ -1,6 +1,8 @@
 import "../../css/contentManagement.scss";
 import { fetchSubcategories } from "../../services/supabase.js";
 import { toggleSubcategoryController } from "../../controller/controller.js";
+import { Subject, debounceTime } from "rxjs";
+import { eventBus } from "../../services/eventBus.js";
 
 class ContentSubcategoriesComponent extends HTMLElement {
   constructor() {
@@ -8,13 +10,14 @@ class ContentSubcategoriesComponent extends HTMLElement {
     this.subcategories = [];
     this.filteredSubcategories = [];
     this.searchTerm = '';
-    this.searchTimeout = null;
+    this.searchSubject$ = new Subject();
   }
 
   async connectedCallback() {
     await this.loadSubcategories();
     this.render();
     this.setupEventListeners();
+    this.setupSearchDebounce();
   }
 
   async loadSubcategories() {
@@ -94,23 +97,22 @@ class ContentSubcategoriesComponent extends HTMLElement {
     `;
   }
 
+  setupSearchDebounce() {
+    this.searchSubject$
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+        this.filterSubcategories();
+        this.render();
+        this.setupEventListeners();
+      });
+  }
+
   setupEventListeners() {
     const searchInput = this.querySelector('.search-input');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         this.searchTerm = e.target.value;
-
-        // Clear previous timeout
-        if (this.searchTimeout) {
-          clearTimeout(this.searchTimeout);
-        }
-
-        // Set new timeout (300ms debounce)
-        this.searchTimeout = setTimeout(() => {
-          this.filterSubcategories();
-          this.render();
-          this.setupEventListeners();
-        }, 300);
+        this.searchSubject$.next();
       });
     }
 
@@ -138,7 +140,7 @@ class ContentSubcategoriesComponent extends HTMLElement {
         await this.loadSubcategories();
         this.render();
         this.setupEventListeners();
-        window.dispatchEvent(new CustomEvent('subcategoriesUpdated'));
+        eventBus.emit('subcategoriesUpdated');
       } else {
         alert('Error al actualizar la visibilidad: ' + result.error);
         button.disabled = false;
@@ -149,6 +151,12 @@ class ContentSubcategoriesComponent extends HTMLElement {
       alert('Error al actualizar la visibilidad');
       button.disabled = false;
       button.textContent = currentStatus ? 'Ocultar' : 'Mostrar';
+    }
+  }
+
+  disconnectedCallback() {
+    if (this.searchSubject$) {
+      this.searchSubject$.complete();
     }
   }
 }

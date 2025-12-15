@@ -30,14 +30,15 @@ async function routeToComponent(route) {
     return await createGlobalGlossary();
   }
 
-  // Verificar permisos de administrador para rutas de Contenido
+  // Verificar permisos de administrador
   if (route === '#Contenido' || route.startsWith('#Contenido/')) {
     const user = await getCurrentUser();
 
     if (!user || user.role !== 'ADMIN') {
       alert('Acceso denegado. Necesitas permisos de administrador.');
-      window.location.hash = '#';
-      return await createTechniquePage(processedUrl);
+      const event = new CustomEvent('navigate', { detail: { route: '#' } });
+      document.dispatchEvent(event);
+      return await createTechniquePage(['']);
     }
   }
 

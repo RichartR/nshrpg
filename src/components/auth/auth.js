@@ -1,5 +1,6 @@
 import "../../css/auth.scss";
 import { signUp, signIn, signOut, getCurrentUser } from "../../services/supabase.js";
+import { navigation } from "../../services/navigation.js";
 
 class AuthComponent extends HTMLElement {
   constructor() {
@@ -101,6 +102,7 @@ class AuthComponent extends HTMLElement {
     `;
   }
 
+  //Activamos los eventos de los botones
   setupEventListeners() {
     const form = this.querySelector('#auth-form');
     const switchModeLink = this.querySelector('#switch-mode');
@@ -124,6 +126,7 @@ class AuthComponent extends HTMLElement {
     }
   }
 
+  //Ejecutamos el submit
   async handleSubmit(e) {
     e.preventDefault();
 
@@ -174,13 +177,13 @@ class AuthComponent extends HTMLElement {
             this.render();
             this.setupEventListeners();
 
-            // Actualizar el estado del header
+            // Actualizamos el estado del header
             const headerComponent = document.querySelector('header-component');
             if (headerComponent) {
               await headerComponent.updateAuthState();
             }
 
-            window.location.hash = '#';
+            navigation.navigate('#');
           }, 1500);
         } else {
           throw new Error(result.error || 'Error al iniciar sesión');
@@ -194,6 +197,7 @@ class AuthComponent extends HTMLElement {
     }
   }
 
+  //Ejecutamos el logout
   async handleLogout() {
     const result = await signOut();
 
@@ -202,13 +206,13 @@ class AuthComponent extends HTMLElement {
       this.render();
       this.setupEventListeners();
 
-      // Actualizar el estado del header
+      // Actualizamos el estado del header
       const headerComponent = document.querySelector('header-component');
       if (headerComponent) {
         await headerComponent.updateAuthState();
       }
 
-      window.location.hash = '#';
+      navigation.navigate('#');
     } else {
       alert('Error al cerrar sesión: ' + result.error);
     }

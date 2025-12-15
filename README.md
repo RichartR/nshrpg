@@ -19,6 +19,7 @@ Sistema de gestión de contenido (CMS) para un juego de rol de Naruto, con glosa
 - **Build Tool**: Vite 7.x
 - **Linting**: ESLint 9.x
 - **Testing**: Vitest 3.x con Happy DOM
+- **Programación Reactiva**: RxJS 7.x (EventBus con Observables)
 - **Gestión de estado**: localStorage (vía Supabase SDK)
 
 ## Instalación
@@ -46,7 +47,7 @@ npm run preview
 
 ## Testing
 
-El proyecto incluye tests unitarios para los componentes principales y el router, implementados con Vitest 3.x y Happy DOM.
+El proyecto incluye tests unitarios para los componentes principales, servicios y el router, implementados con Vitest 3.x y Happy DOM.
 
 ### Ejecutar Tests
 
@@ -66,7 +67,11 @@ npm run test:coverage
 
 ### Estructura de Tests
 
-Los tests se encuentran en `src/tests/` y cubren:
+Los tests se encuentran en `src/tests/` y cubren **74 tests** en total distribuidos en **8 archivos**:
+
+**Servicios (22 tests)**
+- NavigationService (15 tests): Navegación hash-based, listeners, viewport
+- EventBus (7 tests): Sistema de eventos con RxJS Observables
 
 **Router (5 tests)**
 - Exportación correcta de funciones
@@ -74,14 +79,18 @@ Los tests se encuentran en `src/tests/` y cubren:
 - Manejo de rutas vacías y con hash
 
 **Componentes de Glosario (28 tests)**
-- GlobalGlossaryComponent: Renderizado de lista de afiliaciones
-- VillageGlossaryComponent: Navegación de categorías por afiliación
-- ContentCategoriesComponent: Listado de técnicas por categoría
+- GlobalGlossaryComponent (9 tests): Renderizado de lista de afiliaciones
+- VillageGlossaryComponent (9 tests): Navegación de categorías por afiliación
+- ContentCategoriesGlossaryComponent (10 tests): Listado de técnicas por categoría
+
+**Componentes de Administración (19 tests)**
+- ContentAffiliationsComponent (9 tests): CRUD de afiliaciones
+- HeaderComponent (10 tests): Navegación y menú responsive
 
 ### Configuración de Tests
 
 - **Entorno**: Happy DOM (simula el DOM del navegador)
-- **Mocks**: Supabase client, window.location
+- **Mocks**: Supabase client, window.location, EventBus, NavigationService
 - **Globals**: describe, it, expect disponibles sin importar
 - **Setup**: `src/tests/setup.js` configura mocks automáticamente
 
@@ -103,10 +112,21 @@ nshrpg/
 │   ├── css/              # Estilos SCSS organizados por componente
 │   ├── images/           # Recursos estáticos (logos, iconos)
 │   ├── services/         # Servicios de integración con Supabase
-│   ├── tests/            # Tests unitarios con Vitest
+│   │   ├── supabase.js   # Cliente de Supabase
+│   │   ├── eventBus.js   # Sistema de eventos con RxJS
+│   │   └── navigation.js # Servicio de navegación hash-based
+│   ├── tests/            # Tests unitarios con Vitest (74 tests)
 │   │   ├── setup.js      # Configuración de mocks
 │   │   ├── router.test.js
+│   │   ├── services/     # Tests de servicios
+│   │   │   ├── eventBus.test.js
+│   │   │   └── navigation.test.js
 │   │   └── components/   # Tests de componentes
+│   │       ├── globalGlossary.test.js
+│   │       ├── villageGlossary.test.js
+│   │       ├── contentCategoriesGlossary.test.js
+│   │       ├── contentAffiliations.test.js
+│   │       └── header.test.js
 │   ├── environment.env   # Variables de entorno (credenciales Supabase)
 │   ├── router.js         # Enrutador SPA con hash routing
 │   └── main.js          # Punto de entrada de la aplicación
@@ -123,13 +143,13 @@ nshrpg/
 El router implementa navegación SPA mediante hash routing:
 
 - **Hash routing**: Las rutas usan el formato `#ruta` para evitar recargas de página
-- **Rutas dinámicas**: Soporta rutas anidadas como `#KN/Ninjutsu/tech/Rasengan`
+- **Rutas dinámicas**: Soporta rutas anidadas como `#Konohagakure/Clan Inuzuka/tech/generales`
 - **Protección de rutas**: Verifica permisos de admin para rutas de contenido
 - **Componentes dinámicos**: Carga componentes según la ruta actual
 
 Ejemplo de flujo:
 1. Usuario navega a `#Glosario` → Router carga GlobalGlossaryComponent
-2. Usuario hace clic en una afiliación → Router navega a `#KN`
+2. Usuario hace clic en una afiliación → Router navega a `#Konohagakure`
 3. VillageGlossaryComponent se renderiza con las categorías de Konoha
 
 ### Gestión de Estado
@@ -137,10 +157,81 @@ Ejemplo de flujo:
 El estado se maneja mediante:
 
 - **Supabase SDK**: Almacena tokens de sesión en localStorage automáticamente
-- **Custom Events**: Los componentes emiten eventos para comunicación reactiva
+- **EventBus con RxJS**: Sistema de eventos reactivo centralizado usando Observables
+  - `affiliationsUpdated$`, `categoriesUpdated$`, `subcategoriesUpdated$`
+  - Permite comunicación desacoplada entre componentes
+  - Métodos: `emit()` para emitir eventos, `on()` para suscribirse
+- **NavigationService**: Servicio centralizado para gestión de navegación
+  - Abstrae el acceso directo a `window.location.hash`
+  - Proporciona listeners para cambios de ruta
+  - Facilita testing mediante inyección de dependencias
 - **Props directos**: Los datos se pasan directamente a los Web Components mediante métodos setter
 
-No se usa Redux ni Context API - la arquitectura es deliberadamente simple.
+No se usa Redux ni Context API - la arquitectura usa programación reactiva con RxJS de forma ligera.
+
+## Servicios del Proyecto
+
+### EventBus (eventBus.js)
+
+Sistema de eventos centralizado implementado con **RxJS Observables** para comunicación reactiva entre componentes:
+
+```javascript
+import { eventBus } from './services/eventBus.js';
+
+// Emitir un evento
+eventBus.emit('affiliationsUpdated', newData);
+
+// Suscribirse a un evento
+const subscription = eventBus.on('affiliationsUpdated', (data) => {
+  console.log('Afiliaciones actualizadas:', data);
+});
+
+// Cancelar suscripción
+subscription.unsubscribe();
+```
+
+**Eventos disponibles:**
+- `affiliationsUpdated$`: Se emite cuando se modifican afiliaciones
+- `categoriesUpdated$`: Se emite cuando se modifican categorías
+- `subcategoriesUpdated$`: Se emite cuando se modifican subcategorías
+
+**Ventajas:**
+- Desacopla componentes (no necesitan referencias directas)
+- Facilita testing con mocks
+- Permite múltiples suscriptores por evento
+- Gestión automática de memoria con `destroy()`
+
+### NavigationService (navigation.js)
+
+Servicio de navegación que abstrae el acceso a `window.location.hash`:
+
+```javascript
+import { navigation } from './services/navigation.js';
+
+// Navegar a una ruta
+navigation.navigate('#Glosario');
+navigation.navigate('KN'); // Añade # automáticamente
+
+// Obtener ruta actual
+const currentRoute = navigation.getCurrentRoute();
+
+// Escuchar cambios de ruta
+const unsubscribe = navigation.onNavigate((hash) => {
+  console.log('Nueva ruta:', hash);
+});
+
+// Dejar de escuchar
+unsubscribe();
+
+// Obtener ancho del viewport
+const width = navigation.getViewportWidth();
+```
+
+**Ventajas:**
+- Testeable (no depende directamente de window)
+- API consistente y predecible
+- Soporte para múltiples listeners
+- Formateo automático de rutas
 
 ## Autenticación y Permisos
 
@@ -252,8 +343,7 @@ FOR INSERT WITH CHECK (
 # Build
 npm run build
 
-# Los archivos en dist/ están listos para servir
-# Puedes usar Vercel, Netlify, GitHub Pages, etc.
+# Los archivos en dist/ están listos para Vercel
 ```
 
 ## Criterios de Evaluación Cumplidos
@@ -267,21 +357,23 @@ npm run build
 - Validació de formularis
 - Destructuring
 - Registre d'events W3C
-- Programació reactiva (CustomEvents)
+- Programació reactiva (RxJS Observables + CustomEvents)
 - Programació funcional (map, filter, forEach)
 - FormData
+- Classes i encapsulació (EventBus, NavigationService)
 
 ### Backend y Persistencia
 - API REST (Supabase)
 - LocalStorage (Supabase Auth tokens)
 - Mòduls (ES6 imports/exports)
+- Programació reactiva amb RxJS (Observables, Subject)
 
 ### Arquitectura
 - MVC i router
 - Gestió d'errors (try-catch)
 
 ### Tooling
-- Tests (Vitest 3.x con 33 tests)
+- Tests (Vitest 3.x con 74 tests en 8 archivos)
 - Vite (build tool)
 - ESLint (linting)
 
