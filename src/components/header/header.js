@@ -159,7 +159,7 @@ class HeaderComponent extends HTMLElement {
     this.innerHTML = `
       <nav class="main-nav" role="navigation" aria-label="Navegación principal">
         <div class="nav-start">
-          <a href="#" class="nav-logo"><strong>Mi Sitio</strong></a>
+          <a href="#" class="nav-logo"><strong>NHSRPG</strong></a>
         </div>
 
         <ul class="nav-center">
