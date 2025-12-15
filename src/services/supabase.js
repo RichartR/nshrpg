@@ -168,7 +168,7 @@ async function fetchContentCategories(routeProcessed){
   return categories || [];
 }
 
-// ============= Funciones de Autenticación =============
+// Funciones de Autenticación 
 
 async function signUp(email, password, username) {
   try {
@@ -224,7 +224,7 @@ async function getCurrentUser() {
   try {
     const { data: { user }, error } = await supabase.auth.getUser();
 
-    // Si no hay sesión activa, simplemente retornar null sin mostrar error
+    // Si no hay sesión activa retornar null
     if (error?.message === 'Auth session missing!') {
       return null;
     }
@@ -232,7 +232,7 @@ async function getCurrentUser() {
     if (error) throw error;
 
     if (user) {
-      // Obtener el perfil del usuario incluyendo el rol
+      // Obtener el perfil del usuario y rol
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
@@ -268,7 +268,7 @@ async function getSession() {
   }
 }
 
-// ============= Funciones de Gestión de Contenido =============
+// Funciones de Gestión de Contenido
 
 async function updateAffiliationStatus(affiliationId, isActive) {
   try {
@@ -524,10 +524,8 @@ async function uploadImageToStorage(file, bucketName, folder = '', customFileNam
     // Generar nombre del archivo
     let fileName;
     if (customFileName) {
-      // Usar nombre personalizado
       fileName = `${customFileName}.webp`;
     } else {
-      // Generar nombre único con timestamp
       const timestamp = Date.now();
       fileName = `${timestamp}.webp`;
     }
@@ -545,7 +543,7 @@ async function uploadImageToStorage(file, bucketName, folder = '', customFileNam
 
     if (error) throw error;
 
-    // Obtener URL firmada con expiración de 2 años (63072000 segundos)
+    // Obtener URL firmada de 2 años de duración
     const { data: signedUrlData, error: signedError } = await supabase.storage
       .from(bucketName)
       .createSignedUrl(filePath, 63072000);

@@ -2,6 +2,8 @@ import "../../css/contentManagement.scss";
 import { fetchSubcategoryById, fetchCategories, uploadImageToStorage } from "../../services/supabase.js";
 import { updateSubcategoryController } from "../../controller/controller.js";
 import toast from "../../utils/toast.js";
+import { eventBus } from "../../services/eventBus.js";
+import { navigation } from "../../services/navigation.js";
 
 class ContentSubcategoriesEditComponent extends HTMLElement {
   constructor() {
@@ -26,7 +28,7 @@ class ContentSubcategoriesEditComponent extends HTMLElement {
     } else {
       toast.error('Error al cargar la subcategoría: ' + result.error);
       setTimeout(() => {
-        window.location.hash = '#Contenido/subcategorias';
+        navigation.navigate('#Contenido/subcategorias');
       }, 2000);
     }
   }
@@ -153,7 +155,7 @@ class ContentSubcategoriesEditComponent extends HTMLElement {
     submitButton.textContent = 'Guardando...';
 
     try {
-      // Manejar subida de imagen
+      // Subida de imagen
       const imageFile = formData.get('image_file');
       if (imageFile && imageFile.size > 0) {
         const subcategoryName = formData.get('subcategory_name');
@@ -168,10 +170,10 @@ class ContentSubcategoriesEditComponent extends HTMLElement {
       const result = await updateSubcategoryController(this.subcategoryId, updates);
 
       if (result.success) {
-        window.dispatchEvent(new CustomEvent('subcategoriesUpdated'));
+        eventBus.emit('subcategoriesUpdated');
         toast.success('Subcategoría actualizada correctamente');
         setTimeout(() => {
-          window.location.hash = '#Contenido/subcategorias';
+          navigation.navigate('#Contenido/subcategorias');
         }, 1500);
       } else {
         toast.error('Error al actualizar la subcategoría: ' + result.error);

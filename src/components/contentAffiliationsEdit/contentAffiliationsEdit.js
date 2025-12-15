@@ -2,6 +2,8 @@ import "../../css/contentManagement.scss";
 import { fetchAffiliationById, uploadImageToStorage } from "../../services/supabase.js";
 import { updateAffiliationController } from "../../controller/controller.js";
 import toast from "../../utils/toast.js";
+import { eventBus } from "../../services/eventBus.js";
+import { navigation } from "../../services/navigation.js";
 
 class ContentAffiliationsEditComponent extends HTMLElement {
   constructor() {
@@ -24,7 +26,7 @@ class ContentAffiliationsEditComponent extends HTMLElement {
     } else {
       toast.error('Error al cargar la afiliación: ' + result.error);
       setTimeout(() => {
-        window.location.hash = '#Contenido/afiliaciones';
+        navigation.navigate('#Contenido/afiliaciones');
       }, 2000);
     }
   }
@@ -124,7 +126,7 @@ class ContentAffiliationsEditComponent extends HTMLElement {
       </div>
     `;
   }
-
+  // Añadimos eventos a los botones
   setupEventListeners() {
     const form = this.querySelector('#affiliationEditForm');
     if (form) {
@@ -166,10 +168,10 @@ class ContentAffiliationsEditComponent extends HTMLElement {
       const result = await updateAffiliationController(this.affiliationId, updates);
 
       if (result.success) {
-        window.dispatchEvent(new CustomEvent('affiliationsUpdated'));
+        eventBus.emit('affiliationsUpdated');
         toast.success('Afiliación actualizada correctamente');
         setTimeout(() => {
-          window.location.hash = '#Contenido/afiliaciones';
+          navigation.navigate('#Contenido/afiliaciones');
         }, 1500);
       } else {
         toast.error('Error al actualizar la afiliación: ' + result.error);

@@ -2,6 +2,8 @@ import "../../css/contentManagement.scss";
 import { fetchCategoryById, uploadImageToStorage } from "../../services/supabase.js";
 import { updateCategoryController } from "../../controller/controller.js";
 import toast from "../../utils/toast.js";
+import { eventBus } from "../../services/eventBus.js";
+import { navigation } from "../../services/navigation.js";
 
 class ContentCategoriesEditComponent extends HTMLElement {
   constructor() {
@@ -24,7 +26,7 @@ class ContentCategoriesEditComponent extends HTMLElement {
     } else {
       toast.error('Error al cargar la categoría: ' + result.error);
       setTimeout(() => {
-        window.location.hash = '#Contenido/categorias';
+        navigation.navigate('#Contenido/categorias');
       }, 2000);
     }
   }
@@ -104,6 +106,7 @@ class ContentCategoriesEditComponent extends HTMLElement {
     `;
   }
 
+  // Añadimos eventos a los botones
   setupEventListeners() {
     const form = this.querySelector('#categoryEditForm');
     if (form) {
@@ -128,7 +131,7 @@ class ContentCategoriesEditComponent extends HTMLElement {
     submitButton.textContent = 'Guardando...';
 
     try {
-      // Manejar subida de imagen
+      // Subida de imagen
       const imageFile = formData.get('image_file');
       if (imageFile && imageFile.size > 0) {
         const categoryName = formData.get('category_name');
@@ -143,10 +146,10 @@ class ContentCategoriesEditComponent extends HTMLElement {
       const result = await updateCategoryController(this.categoryId, updates);
 
       if (result.success) {
-        window.dispatchEvent(new CustomEvent('categoriesUpdated'));
+        eventBus.emit('categoriesUpdated');
         toast.success('Categoría actualizada correctamente');
         setTimeout(() => {
-          window.location.hash = '#Contenido/categorias';
+          navigation.navigate('#Contenido/categorias');
         }, 1500);
       } else {
         toast.error('Error al actualizar la categoría: ' + result.error);

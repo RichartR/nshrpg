@@ -27,10 +27,10 @@ class ContentCategoriesComponent extends HTMLElement {
       if (!error && data) {
         this.categoryImage = data.img_url;
       }
-      // Si no hay datos, simplemente no se carga imagen (sin error)
+      // Si no hay datos simplemente no se carga imagen
     } catch (err) {
-      // Solo mostrar errores que NO sean de "no encontrado"
-      if (err.code !== 'PGRST116') {
+      // Solo mostrar errores que no sean de "no encontrado"
+      if (err.code !== 'NO_IMAGE') {
         console.error('Error cargando imagen de categoría:', err);
       }
     }

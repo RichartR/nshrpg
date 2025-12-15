@@ -1,14 +1,15 @@
 import "../../css/header.scss";
 import { getCurrentUser, signOut, fetchMenuData } from "../../services/supabase.js";
+import { fromEvent, debounceTime } from "rxjs";
+import { eventBus } from "../../services/eventBus.js";
+import { navigation } from "../../services/navigation.js";
 
 class HeaderComponent extends HTMLElement {
   constructor() {
     super();
     this.menuData = null;
     this.currentUser = null;
-    this.affiliationsUpdateHandler = null;
-    this.categoriesUpdateHandler = null;
-    this.subcategoriesUpdateHandler = null;
+    this.subscriptions = [];
   }
 
   async setMenuData(menuData) {
@@ -20,34 +21,24 @@ class HeaderComponent extends HTMLElement {
   }
 
   setupContentUpdateListeners() {
-    // Remove previous listeners if exist
-    if (this.affiliationsUpdateHandler) {
-      window.removeEventListener('affiliationsUpdated', this.affiliationsUpdateHandler);
-    }
-    if (this.categoriesUpdateHandler) {
-      window.removeEventListener('categoriesUpdated', this.categoriesUpdateHandler);
-    }
-    if (this.subcategoriesUpdateHandler) {
-      window.removeEventListener('subcategoriesUpdated', this.subcategoriesUpdateHandler);
-    }
+    // Limpiar suscripciones anteriores
+    this.cleanupSubscriptions();
 
-    // Create new listeners
-    this.affiliationsUpdateHandler = async () => {
+    // Suscribirse a eventos del Event Bus
+    const affiliationsSubscription = eventBus.on('affiliationsUpdated', async () => {
       await this.refreshMenuData();
-    };
+    });
 
-    this.categoriesUpdateHandler = async () => {
+    const categoriesSubscription = eventBus.on('categoriesUpdated', async () => {
       await this.refreshMenuData();
-    };
+    });
 
-    this.subcategoriesUpdateHandler = async () => {
+    const subcategoriesSubscription = eventBus.on('subcategoriesUpdated', async () => {
       await this.refreshMenuData();
-    };
+    });
 
-    // Add listeners
-    window.addEventListener('affiliationsUpdated', this.affiliationsUpdateHandler);
-    window.addEventListener('categoriesUpdated', this.categoriesUpdateHandler);
-    window.addEventListener('subcategoriesUpdated', this.subcategoriesUpdateHandler);
+    // Guardar referencias para limpiarlas después
+    this.subscriptions.push(affiliationsSubscription, categoriesSubscription, subcategoriesSubscription);
   }
 
   async refreshMenuData() {
@@ -223,16 +214,19 @@ class HeaderComponent extends HTMLElement {
     }
 
     this.initMobileSubmenus();
+    this.setupResizeListener();
+  }
 
-    let resizeTimer;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => this.initMobileSubmenus(), 250);
-    });
+  setupResizeListener() {
+    const resizeSubscription = fromEvent(window, 'resize')
+      .pipe(debounceTime(250))
+      .subscribe(() => this.initMobileSubmenus());
+
+    this.subscriptions.push(resizeSubscription);
   }
 
   initMobileSubmenus() {
-    if (window.innerWidth > 1023) return;
+    if (navigation.getViewportWidth() > 1023) return;
 
     const navToggle = this.querySelector(".nav-toggle");
     const navMenu = this.querySelector(".nav-center");
@@ -309,23 +303,24 @@ class HeaderComponent extends HTMLElement {
     const result = await signOut();
     if (result.success) {
       await this.updateAuthState();
-      window.location.hash = '#';
+      navigation.navigate('#');
     } else {
       alert('Error al cerrar sesión: ' + result.error);
     }
   }
 
+  cleanupSubscriptions() {
+    //Limpiar suscripciones
+    this.subscriptions.forEach(subscription => {
+      if (subscription && subscription.unsubscribe) {
+        subscription.unsubscribe();
+      }
+    });
+    this.subscriptions = [];
+  }
+
   disconnectedCallback() {
-    // Cleanup event listeners when component is removed from DOM
-    if (this.affiliationsUpdateHandler) {
-      window.removeEventListener('affiliationsUpdated', this.affiliationsUpdateHandler);
-    }
-    if (this.categoriesUpdateHandler) {
-      window.removeEventListener('categoriesUpdated', this.categoriesUpdateHandler);
-    }
-    if (this.subcategoriesUpdateHandler) {
-      window.removeEventListener('subcategoriesUpdated', this.subcategoriesUpdateHandler);
-    }
+    this.cleanupSubscriptions();
   }
 }
 

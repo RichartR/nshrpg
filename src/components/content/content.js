@@ -9,6 +9,7 @@ class ContentComponent extends HTMLElement {
     this.render();
   }
 
+  //Mostramos el dashboard para los admin
   render() {
     this.innerHTML = `
       <div class="wrapper-content-dashboard">

@@ -1,5 +1,6 @@
 import { router } from './router';
 import { fetchMenuData } from './services/supabase.js';
+import { navigation } from './services/navigation.js';
 
 import HeaderComponent from './components/header/header.js';
 import FooterComponent from './components/footer/footer.js';
@@ -48,9 +49,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   footer.innerHTML = '';
   footer.appendChild(footerComponent);
 
-  router(window.location.hash, app);
-  window.addEventListener("hashchange", () => {
-    router(window.location.hash, app);
+  // Navegación para no usar window
+  navigation.init();
+
+  // Ruta inicial
+  router(navigation.getCurrentRoute(), app);
+
+  // Esuchar cambios
+  navigation.onNavigate((route) => {
+    router(route, app);
+  });
+
+  // Escuchar eventos
+  document.addEventListener('navigate', (event) => {
+    const { route } = event.detail;
+    navigation.navigate(route);
   });
 })
 

@@ -1,6 +1,8 @@
 import "../../css/contentManagement.scss";
 import { fetchCategories } from "../../services/supabase.js";
 import { toggleCategoryController } from "../../controller/controller.js";
+import { Subject, debounceTime } from "rxjs";
+import { eventBus } from "../../services/eventBus.js";
 
 class ContentCategoriesComponent extends HTMLElement {
   constructor() {
@@ -8,13 +10,14 @@ class ContentCategoriesComponent extends HTMLElement {
     this.categories = [];
     this.filteredCategories = [];
     this.searchTerm = '';
-    this.searchTimeout = null;
+    this.searchSubject$ = new Subject();
   }
 
   async connectedCallback() {
     await this.loadCategories();
     this.render();
     this.setupEventListeners();
+    this.setupSearchDebounce();
   }
 
   async loadCategories() {
@@ -92,23 +95,23 @@ class ContentCategoriesComponent extends HTMLElement {
     `;
   }
 
+  setupSearchDebounce() {
+    this.searchSubject$
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+        this.filterCategories();
+        this.render();
+        this.setupEventListeners();
+      });
+  }
+
+  // Añadimos eventos a los botones
   setupEventListeners() {
     const searchInput = this.querySelector('.search-input');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         this.searchTerm = e.target.value;
-
-        // Clear previous timeout
-        if (this.searchTimeout) {
-          clearTimeout(this.searchTimeout);
-        }
-
-        // Set new timeout (300ms debounce)
-        this.searchTimeout = setTimeout(() => {
-          this.filterCategories();
-          this.render();
-          this.setupEventListeners();
-        }, 300);
+        this.searchSubject$.next();
       });
     }
 
@@ -136,7 +139,7 @@ class ContentCategoriesComponent extends HTMLElement {
         await this.loadCategories();
         this.render();
         this.setupEventListeners();
-        window.dispatchEvent(new CustomEvent('categoriesUpdated'));
+        eventBus.emit('categoriesUpdated');
       } else {
         alert('Error al actualizar la visibilidad: ' + result.error);
         button.disabled = false;
@@ -147,6 +150,12 @@ class ContentCategoriesComponent extends HTMLElement {
       alert('Error al actualizar la visibilidad');
       button.disabled = false;
       button.textContent = currentStatus ? 'Ocultar' : 'Mostrar';
+    }
+  }
+
+  disconnectedCallback() {
+    if (this.searchSubject$) {
+      this.searchSubject$.complete();
     }
   }
 }
